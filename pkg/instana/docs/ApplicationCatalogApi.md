@@ -40,7 +40,7 @@ This endpoint does not need any parameter.
 
 ## GetApplicationCatalogTags
 
-> []PluginResult GetApplicationCatalogTags(ctx, )
+> []Tag GetApplicationCatalogTags(ctx, )
 Get filter tag catalog
 
 This endpoint retrieves all available tags for your monitored system.  These tags can be used to group metric results. ``` \"group\": {   \"groupbyTag\": \"service.name\" } ```  These tags can be used to filter metric results. ``` \"tagFilters\": [{  \"name\": \"application.name\",  \"operator\": \"EQUALS\",  \"value\": \"example\" }] ``` 
@@ -51,7 +51,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**[]PluginResult**](PluginResult.md)
+[**[]Tag**](Tag.md)
 
 ### Authorization
 

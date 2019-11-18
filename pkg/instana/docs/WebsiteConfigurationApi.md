@@ -4,16 +4,16 @@ All URIs are relative to *https://unit-tenant.instana.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**Delete**](WebsiteConfigurationApi.md#Delete) | **Delete** /api/website-monitoring/config/{websiteId} | Remove website
+[**Delete1**](WebsiteConfigurationApi.md#Delete1) | **Delete** /api/website-monitoring/config/{websiteId} | Remove website
 [**Get**](WebsiteConfigurationApi.md#Get) | **Get** /api/website-monitoring/config | Get configured websites
 [**Post**](WebsiteConfigurationApi.md#Post) | **Post** /api/website-monitoring/config | Configure new website
 [**Rename**](WebsiteConfigurationApi.md#Rename) | **Put** /api/website-monitoring/config/{websiteId} | Rename website
 
 
 
-## Delete
+## Delete1
 
-> Delete(ctx, websiteId)
+> Delete1(ctx, websiteId)
 Remove website
 
 ### Required Parameters

@@ -1,11 +1,11 @@
-# ProfilePath
+# BaselineSegment
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**NumProcesses** | **int64** |  | [optional] 
-**ProfileNodes** | [**[]ProfileNode**](ProfileNode.md) |  | [optional] 
+**Mean** | **float64** |  | [optional] 
+**Sd** | **float64** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

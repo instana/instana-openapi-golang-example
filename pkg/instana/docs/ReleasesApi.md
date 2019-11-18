@@ -45,7 +45,7 @@ Name | Type | Description  | Notes
 
 ## GetAllReleases
 
-> []WithMetadata GetAllReleases(ctx, optional)
+> []ReleaseWithMetadata GetAllReleases(ctx, optional)
 Get all releases
 
 This endpoint exposes the Releases functionality.  These APIs can be used to create, update, delete and fetch already existing releases.  ## Mandatory Parameters:  **releaseId:** A unique identifier assigned to each release.  ## Optional Parameters:  **name:** Name of the exact release you want to retrieve, eg. \"Release-161\", \"Release-162\".  **start:** Start time of the particular release.  **from:** Filters the releases to retrieve only the releases which have \"start\" time greater than or equal to this value.  **to:** Filters the releases to retrieve only the releases which have \"start\" time lesser than or equal to this value.  **maxResults:** Maximum number of releases to be retrieved.  ## Defaults:  **from, to, maxResults:** By default these parameters are not set.  
@@ -71,7 +71,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**[]WithMetadata**](WithMetadata.md)
+[**[]ReleaseWithMetadata**](ReleaseWithMetadata.md)
 
 ### Authorization
 
@@ -89,7 +89,7 @@ Name | Type | Description  | Notes
 
 ## GetRelease
 
-> WithMetadata GetRelease(ctx, releaseId)
+> ReleaseWithMetadata GetRelease(ctx, releaseId)
 Get release
 
 ### Required Parameters
@@ -102,7 +102,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithMetadata**](WithMetadata.md)
+[**ReleaseWithMetadata**](ReleaseWithMetadata.md)
 
 ### Authorization
 
@@ -120,7 +120,7 @@ Name | Type | Description  | Notes
 
 ## PostRelease
 
-> WithMetadata PostRelease(ctx, release)
+> ReleaseWithMetadata PostRelease(ctx, release)
 Create release
 
 ### Required Parameters
@@ -133,7 +133,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithMetadata**](WithMetadata.md)
+[**ReleaseWithMetadata**](ReleaseWithMetadata.md)
 
 ### Authorization
 
@@ -151,7 +151,7 @@ Name | Type | Description  | Notes
 
 ## PutRelease
 
-> WithMetadata PutRelease(ctx, releaseId, release)
+> ReleaseWithMetadata PutRelease(ctx, releaseId, release)
 Update release
 
 ### Required Parameters
@@ -165,7 +165,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithMetadata**](WithMetadata.md)
+[**ReleaseWithMetadata**](ReleaseWithMetadata.md)
 
 ### Authorization
 

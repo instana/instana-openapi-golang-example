@@ -1,13 +1,14 @@
-# ProfiledProcess
+# MaintenanceConfigWithLastUpdated
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ProcessSnapshotId** | **string** |  | [optional] 
-**ProcessName** | **string** |  | [optional] 
-**ProcessHost** | **string** |  | [optional] 
-**Technology** | **[]string** |  | [optional] 
+**Id** | **string** |  | [optional] 
+**Name** | **string** |  | [optional] 
+**Query** | **string** |  | 
+**Windows** | [**[]MaintenanceWindow**](MaintenanceWindow.md) |  | [optional] 
+**LastUpdated** | **int64** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

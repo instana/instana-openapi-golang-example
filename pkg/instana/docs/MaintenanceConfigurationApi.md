@@ -46,7 +46,7 @@ Name | Type | Description  | Notes
 
 ## GetMaintenanceConfig
 
-> WithLastUpdated GetMaintenanceConfig(ctx, id)
+> MaintenanceConfigWithLastUpdated GetMaintenanceConfig(ctx, id)
 Maintenance configuration
 
 ### Required Parameters
@@ -59,7 +59,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithLastUpdated**](WithLastUpdated.md)
+[**MaintenanceConfigWithLastUpdated**](MaintenanceConfigWithLastUpdated.md)
 
 ### Authorization
 

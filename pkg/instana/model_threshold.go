@@ -10,7 +10,6 @@
 
 package instana
 
-type HealthState struct {
-	Health   string   `json:"health,omitempty"`
-	Messages []string `json:"messages,omitempty"`
+type Threshold struct {
+	Type string `json:"type,omitempty"`
 }

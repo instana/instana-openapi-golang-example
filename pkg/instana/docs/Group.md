@@ -4,8 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**GroupbyTag** | **string** |  | [optional] 
+**GroupbyTag** | **string** |  | 
 **GroupbyTagSecondLevelKey** | **string** |  | [optional] 
+**GroupbyTagEntity** | **string** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

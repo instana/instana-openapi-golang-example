@@ -4,6 +4,7 @@ All URIs are relative to *https://unit-tenant.instana.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**Create**](EventSettingsApi.md#Create) | **Post** /api/events/settings/website-alert-configs | Creates a new Website Alert Config
 [**DeleteAlert**](EventSettingsApi.md#DeleteAlert) | **Delete** /api/events/settings/alerts/{id} | Delete alerting
 [**DeleteAlertingChannel**](EventSettingsApi.md#DeleteAlertingChannel) | **Delete** /api/events/settings/alertingChannels/{id} | Delete alerting channel
 [**DeleteBuiltInEventSpecification**](EventSettingsApi.md#DeleteBuiltInEventSpecification) | **Delete** /api/events/settings/event-specifications/built-in/{eventSpecificationId} | Delete built-in event specification
@@ -12,6 +13,9 @@ Method | HTTP request | Description
 [**DisableCustomEventSpecification**](EventSettingsApi.md#DisableCustomEventSpecification) | **Post** /api/events/settings/event-specifications/custom/{eventSpecificationId}/disable | Disable custom event specification
 [**EnableBuiltInEventSpecification**](EventSettingsApi.md#EnableBuiltInEventSpecification) | **Post** /api/events/settings/event-specifications/built-in/{eventSpecificationId}/enable | Enable built-in event specification
 [**EnableCustomEventSpecification**](EventSettingsApi.md#EnableCustomEventSpecification) | **Post** /api/events/settings/event-specifications/custom/{eventSpecificationId}/enable | Enable custom event specification
+[**Find**](EventSettingsApi.md#Find) | **Get** /api/events/settings/website-alert-configs/{id} | Find a Website Alert Config by ID. This will deliver deleted configs too
+[**FindAllActive**](EventSettingsApi.md#FindAllActive) | **Get** /api/events/settings/website-alert-configs | Find all Website Alert Configs
+[**FindVersions**](EventSettingsApi.md#FindVersions) | **Get** /api/events/settings/website-alert-configs/{id}/versions | Find all versions of a Website Alert Config by ID. This will deliver deleted configs too
 [**GetAlert**](EventSettingsApi.md#GetAlert) | **Get** /api/events/settings/alerts/{id} | Alerting
 [**GetAlertingChannel**](EventSettingsApi.md#GetAlertingChannel) | **Get** /api/events/settings/alertingChannels/{id} | Alerting channel
 [**GetAlertingChannels**](EventSettingsApi.md#GetAlertingChannels) | **Get** /api/events/settings/alertingChannels | All alerting channels
@@ -28,7 +32,39 @@ Method | HTTP request | Description
 [**PutAlertingChannel**](EventSettingsApi.md#PutAlertingChannel) | **Put** /api/events/settings/alertingChannels/{id} | Update alerting channel
 [**PutCustomEventSpecification**](EventSettingsApi.md#PutCustomEventSpecification) | **Put** /api/events/settings/event-specifications/custom/{eventSpecificationId} | Update custom event specification
 [**SendTestAlerting**](EventSettingsApi.md#SendTestAlerting) | **Put** /api/events/settings/alertingChannels/test | Test alerting channel
+[**Update**](EventSettingsApi.md#Update) | **Post** /api/events/settings/website-alert-configs/{id} | Updates an existing Website Alert Config
 
+
+
+## Create
+
+> []WebsiteAlertConfigWithMetadata Create(ctx, websiteAlertConfig)
+Creates a new Website Alert Config
+
+### Required Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**websiteAlertConfig** | [**WebsiteAlertConfig**](WebsiteAlertConfig.md)|  | 
+
+### Return type
+
+[**[]WebsiteAlertConfigWithMetadata**](WebsiteAlertConfigWithMetadata.md)
+
+### Authorization
+
+[ApiKeyAuth](../README.md#ApiKeyAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## DeleteAlert
@@ -188,7 +224,7 @@ Name | Type | Description  | Notes
 
 ## DisableCustomEventSpecification
 
-> WithLastUpdated DisableCustomEventSpecification(ctx, eventSpecificationId)
+> CustomEventSpecificationWithLastUpdated DisableCustomEventSpecification(ctx, eventSpecificationId)
 Disable custom event specification
 
 ### Required Parameters
@@ -201,7 +237,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithLastUpdated**](WithLastUpdated.md)
+[**CustomEventSpecificationWithLastUpdated**](CustomEventSpecificationWithLastUpdated.md)
 
 ### Authorization
 
@@ -250,7 +286,7 @@ Name | Type | Description  | Notes
 
 ## EnableCustomEventSpecification
 
-> WithLastUpdated EnableCustomEventSpecification(ctx, eventSpecificationId)
+> CustomEventSpecificationWithLastUpdated EnableCustomEventSpecification(ctx, eventSpecificationId)
 Enable custom event specification
 
 ### Required Parameters
@@ -263,7 +299,120 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithLastUpdated**](WithLastUpdated.md)
+[**CustomEventSpecificationWithLastUpdated**](CustomEventSpecificationWithLastUpdated.md)
+
+### Authorization
+
+[ApiKeyAuth](../README.md#ApiKeyAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## Find
+
+> []WebsiteAlertConfigWithMetadata Find(ctx, id, optional)
+Find a Website Alert Config by ID. This will deliver deleted configs too
+
+### Required Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**id** | **string**|  | 
+ **optional** | ***FindOpts** | optional parameters | nil if no parameters
+
+### Optional Parameters
+
+Optional parameters are passed through a pointer to a FindOpts struct
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **validOn** | **optional.Int64**|  | 
+
+### Return type
+
+[**[]WebsiteAlertConfigWithMetadata**](WebsiteAlertConfigWithMetadata.md)
+
+### Authorization
+
+[ApiKeyAuth](../README.md#ApiKeyAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## FindAllActive
+
+> []WebsiteAlertConfigWithMetadata FindAllActive(ctx, optional)
+Find all Website Alert Configs
+
+### Required Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+ **optional** | ***FindAllActiveOpts** | optional parameters | nil if no parameters
+
+### Optional Parameters
+
+Optional parameters are passed through a pointer to a FindAllActiveOpts struct
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **websiteId** | **optional.String**|  | 
+
+### Return type
+
+[**[]WebsiteAlertConfigWithMetadata**](WebsiteAlertConfigWithMetadata.md)
+
+### Authorization
+
+[ApiKeyAuth](../README.md#ApiKeyAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## FindVersions
+
+> []ConfigVersion FindVersions(ctx, id)
+Find all versions of a Website Alert Config by ID. This will deliver deleted configs too
+
+### Required Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**id** | **string**|  | 
+
+### Return type
+
+[**[]ConfigVersion**](ConfigVersion.md)
 
 ### Authorization
 
@@ -281,7 +430,7 @@ Name | Type | Description  | Notes
 
 ## GetAlert
 
-> WithLastUpdated GetAlert(ctx, id)
+> AlertingConfigurationWithLastUpdated GetAlert(ctx, id)
 Alerting
 
 ### Required Parameters
@@ -294,7 +443,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithLastUpdated**](WithLastUpdated.md)
+[**AlertingConfigurationWithLastUpdated**](AlertingConfigurationWithLastUpdated.md)
 
 ### Authorization
 
@@ -481,7 +630,7 @@ Name | Type | Description  | Notes
 
 ## GetBuiltInEventSpecifications
 
-> []WithLastUpdated GetBuiltInEventSpecifications(ctx, optional)
+> []BuiltInEventSpecificationWithLastUpdated GetBuiltInEventSpecifications(ctx, optional)
 All built-in event specification
 
 ### Required Parameters
@@ -503,7 +652,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**[]WithLastUpdated**](WithLastUpdated.md)
+[**[]BuiltInEventSpecificationWithLastUpdated**](BuiltInEventSpecificationWithLastUpdated.md)
 
 ### Authorization
 
@@ -664,7 +813,7 @@ This endpoint does not need any parameter.
 
 ## PutAlert
 
-> WithLastUpdated PutAlert(ctx, id, alertingConfiguration)
+> AlertingConfigurationWithLastUpdated PutAlert(ctx, id, alertingConfiguration)
 Update alerting
 
 ### Required Parameters
@@ -678,7 +827,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithLastUpdated**](WithLastUpdated.md)
+[**AlertingConfigurationWithLastUpdated**](AlertingConfigurationWithLastUpdated.md)
 
 ### Authorization
 
@@ -728,7 +877,7 @@ Name | Type | Description  | Notes
 
 ## PutCustomEventSpecification
 
-> WithLastUpdated PutCustomEventSpecification(ctx, eventSpecificationId, customEventSpecification)
+> CustomEventSpecificationWithLastUpdated PutCustomEventSpecification(ctx, eventSpecificationId, customEventSpecification)
 Update custom event specification
 
 ### Required Parameters
@@ -742,7 +891,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WithLastUpdated**](WithLastUpdated.md)
+[**CustomEventSpecificationWithLastUpdated**](CustomEventSpecificationWithLastUpdated.md)
 
 ### Authorization
 
@@ -782,6 +931,38 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## Update
+
+> []WebsiteAlertConfigWithMetadata Update(ctx, id, websiteAlertConfig)
+Updates an existing Website Alert Config
+
+### Required Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**id** | **string**|  | 
+**websiteAlertConfig** | [**WebsiteAlertConfig**](WebsiteAlertConfig.md)|  | 
+
+### Return type
+
+[**[]WebsiteAlertConfigWithMetadata**](WebsiteAlertConfigWithMetadata.md)
+
+### Authorization
+
+[ApiKeyAuth](../README.md#ApiKeyAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

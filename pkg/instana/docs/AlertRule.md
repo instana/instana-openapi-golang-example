@@ -1,13 +1,10 @@
-# ProcessGroupsResult
+# AlertRule
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Items** | [**[]ProcessGroupsItem**](ProcessGroupsItem.md) |  | 
-**CanLoadMore** | **bool** |  | [optional] 
-**TotalHits** | **int32** |  | [optional] 
-**TotalRepresentedItemCount** | **int32** |  | [optional] 
+**AlertType** | **string** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

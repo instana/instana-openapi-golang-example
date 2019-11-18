@@ -8,3 +8,7 @@ We need the tenant and unit from your environment. When using our SaaS offering,
 ```
 INSTANA_TENANT=instana INSTANA_UNIT=test INSTANA_KEY=$your_token$ go run main.go
 ```
+
+## License
+
+MIT

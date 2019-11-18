@@ -5,7 +5,7 @@ if [[ ! -f "resources/openapi.yaml" ]]; then
 fi
 
 if [[ ! -f openapi-generator-cli.jar ]]; then
-	wget http://central.maven.org/maven2/org/openapitools/openapi-generator-cli/4.1.0/openapi-generator-cli-4.1.0.jar -O openapi-generator-cli.jar
+	wget http://central.maven.org/maven2/org/openapitools/openapi-generator-cli/4.2.1/openapi-generator-cli-4.2.1.jar -O openapi-generator-cli.jar
 fi
 
 GO_POST_PROCESS_FILE="gofmt -s -w" java -jar openapi-generator-cli.jar generate -i resources/openapi.yaml -g go \

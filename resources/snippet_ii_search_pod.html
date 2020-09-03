@@ -1,0 +1,18 @@
+
+	<span class="com">// search for the kubernetes pod plugin</span>
+	<span class="com">// https://instana.github.io/openapi/#operation/getInfrastructureCatalogPlugins</span>
+	<span class="pln">plugins</span><span class="pun">,</span> <span class="pln">_</span><span class="pun">,</span> <span class="pln">err</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">client</span><span class="pun">.</span><span class="typ">InfrastructureCatalogApi</span><span class="pun">.</span><span class="typ">GetInfrastructureCatalogPlugins</span><span class="pun">(</span><span class="pln">auth</span><span class="pun">)</span>
+	<span class="kwd">if</span> <span class="pln">err</span> <span class="pun">!</span><span class="pun">=</span> <span class="kwd">nil</span> <span class="pun">{</span>
+		<span class="pln">println</span><span class="pun">(</span><span class="pln">fmt</span><span class="pun">.</span><span class="typ">Errorf</span><span class="pun">(</span><span class="str">&#34;Error reading plugins: %s&#34;</span><span class="pun">,</span> <span class="pln">err</span><span class="pun">)</span><span class="pun">)</span>
+
+		<span class="pln">os</span><span class="pun">.</span><span class="typ">Exit</span><span class="pun">(</span><span class="dec">1</span><span class="pun">)</span>
+	<span class="pun">}</span>
+
+	<span class="pln">println</span><span class="pun">(</span><span class="str">&#34;\n\nLet&#39;s find ourselves some kubernetes pods!&#34;</span><span class="pun">)</span>
+
+	<span class="com">// search for kubernetes plugins:</span>
+	<span class="kwd">for</span> <span class="pln">_</span><span class="pun">,</span> <span class="pln">plugin</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">range</span> <span class="pln">plugins</span> <span class="pun">{</span>
+		<span class="kwd">if</span> <span class="pln">strings</span><span class="pun">.</span><span class="typ">Contains</span><span class="pun">(</span><span class="pln">plugin</span><span class="pun">.</span><span class="typ">Plugin</span><span class="pun">,</span> <span class="str">&#34;kubernetes&#34;</span><span class="pun">)</span> <span class="pun">{</span>
+			<span class="pln">fmt</span><span class="pun">.</span><span class="typ">Printf</span><span class="pun">(</span><span class="str">&#34;Found Kubernetes plugin %s with ID %s\n&#34;</span><span class="pun">,</span> <span class="pln">plugin</span><span class="pun">.</span><span class="typ">Label</span><span class="pun">,</span> <span class="pln">plugin</span><span class="pun">.</span><span class="typ">Plugin</span><span class="pun">)</span>
+		<span class="pun">}</span>
+	<span class="pun">}</span>

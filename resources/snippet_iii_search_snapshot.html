@@ -1,0 +1,24 @@
+	<span class="com">// let&#39;s find all the Snapshots that involve Kubernetes pods!</span>
+	<span class="com">// https://instana.github.io/openapi/#operation/getSnapshots</span>
+	<span class="pln">snapshotsWithKubernetesPods</span><span class="pun">,</span> <span class="pln">_</span><span class="pun">,</span> <span class="pln">err</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">client</span><span class="pun">.</span><span class="typ">InfrastructureMetricsApi</span><span class="pun">.</span><span class="typ">GetSnapshots</span><span class="pun">(</span><span class="pln">auth</span><span class="pun">,</span> <span class="pun">&amp;</span><span class="pln">instana</span><span class="pun">.</span><span class="typ">GetSnapshotsOpts</span><span class="pun">{</span>
+		<span class="typ">Plugin</span><span class="pun">:</span> <span class="pln">optional</span><span class="pun">.</span><span class="typ">NewString</span><span class="pun">(</span><span class="pln">kubernetesPodPluginID</span><span class="pun">)</span><span class="pun">,</span>
+
+		<span class="com">// We know that clusters, when monitored with Instana usually have pods with a name of `instana-agent-*`</span>
+		<span class="typ">Query</span><span class="pun">:</span> <span class="pln">optional</span><span class="pun">.</span><span class="typ">NewString</span><span class="pun">(</span><span class="str">&#34;entity.kubernetes.pod.name:instana-agent*&#34;</span><span class="pun">)</span><span class="pun">,</span>
+
+		<span class="com">// We can travel through time and query data from entities that are no more!</span>
+		<span class="typ">Offline</span><span class="pun">:</span> <span class="pln">optional</span><span class="pun">.</span><span class="typ">NewBool</span><span class="pun">(</span><span class="kwd">true</span><span class="pun">)</span><span class="pun">,</span>
+
+		<span class="com">// Instana uses Milliseconds accross the board</span>
+		<span class="typ">WindowSize</span><span class="pun">:</span> <span class="pln">optional</span><span class="pun">.</span><span class="typ">NewInt64</span><span class="pun">(</span><span class="dec">7</span> <span class="pun">*</span> <span class="dec">86400</span> <span class="pun">*</span> <span class="dec">1000</span><span class="pun">)</span><span class="pun">,</span>
+		<span class="typ">To</span><span class="pun">:</span>         <span class="pln">optional</span><span class="pun">.</span><span class="typ">NewInt64</span><span class="pun">(</span><span class="pln">time</span><span class="pun">.</span><span class="typ">Now</span><span class="pun">(</span><span class="pun">)</span><span class="pun">.</span><span class="typ">Unix</span><span class="pun">(</span><span class="pun">)</span> <span class="pun">*</span> <span class="kwd">int64</span><span class="pun">(</span><span class="pln">time</span><span class="pun">.</span><span class="typ">Millisecond</span><span class="pun">)</span><span class="pun">)</span><span class="pun">,</span>
+	<span class="pun">}</span><span class="pun">)</span>
+	<span class="kwd">if</span> <span class="pln">err</span> <span class="pun">!</span><span class="pun">=</span> <span class="kwd">nil</span> <span class="pun">{</span>
+		<span class="pln">println</span><span class="pun">(</span><span class="pln">fmt</span><span class="pun">.</span><span class="typ">Errorf</span><span class="pun">(</span><span class="str">&#34;Error reading snapshots: %s&#34;</span><span class="pun">,</span> <span class="pln">err</span><span class="pun">)</span><span class="pun">)</span>
+
+		<span class="pln">os</span><span class="pun">.</span><span class="typ">Exit</span><span class="pun">(</span><span class="dec">1</span><span class="pun">)</span>
+	<span class="pun">}</span>
+
+	<span class="kwd">for</span> <span class="pln">_</span><span class="pun">,</span> <span class="pln">snapshot</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">range</span> <span class="pln">snapshotsWithKubernetesPods</span><span class="pun">.</span><span class="typ">Items</span> <span class="pun">{</span>
+		<span class="pln">fmt</span><span class="pun">.</span><span class="typ">Printf</span><span class="pun">(</span><span class="str">&#34;Kubernetes Pod %s on Host %s with snapshot ID %s \n&#34;</span><span class="pun">,</span> <span class="pln">snapshot</span><span class="pun">.</span><span class="typ">Label</span><span class="pun">,</span> <span class="pln">snapshot</span><span class="pun">.</span><span class="typ">Host</span><span class="pun">,</span> <span class="pln">snapshot</span><span class="pun">.</span><span class="typ">SnapshotId</span><span class="pun">)</span>
+	<span class="pun">}</span>

@@ -1,0 +1,45 @@
+
+<span class="kwd">package</span> <span class="pln">main</span>
+
+<span class="kwd">import</span> <span class="pun">(</span>
+	<span class="str">&#34;context&#34;</span>
+	<span class="str">&#34;fmt&#34;</span>
+	<span class="str">&#34;os&#34;</span>
+	<span class="str">&#34;strings&#34;</span>
+	<span class="str">&#34;time&#34;</span>
+
+	<span class="str">&#34;github.com/antihax/optional&#34;</span>
+	<span class="str">&#34;github.com/instana/instana-openapi-golang-example/pkg/instana&#34;</span>
+<span class="pun">)</span>
+
+<span class="kwd">func</span> <span class="pln">main</span><span class="pun">(</span><span class="pun">)</span> <span class="pun">{</span>
+	<span class="com">// grab settings from environment</span>
+	<span class="pln">apiKey</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">os</span><span class="pun">.</span><span class="typ">Getenv</span><span class="pun">(</span><span class="str">&#34;INSTANA_KEY&#34;</span><span class="pun">)</span>
+	<span class="pln">tenant</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">os</span><span class="pun">.</span><span class="typ">Getenv</span><span class="pun">(</span><span class="str">&#34;INSTANA_TENANT&#34;</span><span class="pun">)</span>
+	<span class="pln">unit</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">os</span><span class="pun">.</span><span class="typ">Getenv</span><span class="pun">(</span><span class="str">&#34;INSTANA_UNIT&#34;</span><span class="pun">)</span>
+
+	<span class="com">// create golang client specific configuration</span>
+	<span class="pln">configuration</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">instana</span><span class="pun">.</span><span class="typ">NewConfiguration</span><span class="pun">(</span><span class="pun">)</span>
+	<span class="pln">host</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">fmt</span><span class="pun">.</span><span class="typ">Sprintf</span><span class="pun">(</span><span class="str">&#34;%s-%s.instana.io&#34;</span><span class="pun">,</span> <span class="pln">unit</span><span class="pun">,</span> <span class="pln">tenant</span><span class="pun">)</span>
+	<span class="pln">configuration</span><span class="pun">.</span><span class="typ">Host</span> <span class="pun">=</span> <span class="pln">host</span>
+	<span class="pln">configuration</span><span class="pun">.</span><span class="typ">BasePath</span> <span class="pun">=</span> <span class="pln">fmt</span><span class="pun">.</span><span class="typ">Sprintf</span><span class="pun">(</span><span class="str">&#34;https://%s&#34;</span><span class="pun">,</span> <span class="pln">host</span><span class="pun">)</span>
+
+	<span class="pln">client</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">instana</span><span class="pun">.</span><span class="typ">NewAPIClient</span><span class="pun">(</span><span class="pln">configuration</span><span class="pun">)</span>
+
+	<span class="com">// Instana uses the `apiToken` prefix in the `Authorization` header</span>
+	<span class="pln">auth</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">context</span><span class="pun">.</span><span class="typ">WithValue</span><span class="pun">(</span><span class="pln">context</span><span class="pun">.</span><span class="typ">Background</span><span class="pun">(</span><span class="pun">)</span><span class="pun">,</span> <span class="pln">instana</span><span class="pun">.</span><span class="typ">ContextAPIKey</span><span class="pun">,</span> <span class="pln">instana</span><span class="pun">.</span><span class="typ">APIKey</span><span class="pun">{</span>
+		<span class="typ">Key</span><span class="pun">:</span>    <span class="pln">apiKey</span><span class="pun">,</span>
+		<span class="typ">Prefix</span><span class="pun">:</span> <span class="str">&#34;apiToken&#34;</span><span class="pun">,</span>
+	<span class="pun">}</span><span class="pun">)</span>
+
+	<span class="pln">searchFieldResults</span><span class="pun">,</span> <span class="pln">_</span><span class="pun">,</span> <span class="pln">err</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">client</span><span class="pun">.</span><span class="typ">InfrastructureCatalogApi</span><span class="pun">.</span><span class="typ">GetInfrastructureCatalogSearchFields</span><span class="pun">(</span><span class="pln">auth</span><span class="pun">)</span>
+	<span class="kwd">if</span> <span class="pln">err</span> <span class="pun">!</span><span class="pun">=</span> <span class="kwd">nil</span> <span class="pun">{</span>
+		<span class="pln">fmt</span><span class="pun">.</span><span class="typ">Println</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span>
+
+		<span class="pln">os</span><span class="pun">.</span><span class="typ">Exit</span><span class="pun">(</span><span class="dec">1</span><span class="pun">)</span>
+	<span class="pun">}</span>
+
+	<span class="pln">fmt</span><span class="pun">.</span><span class="typ">Println</span><span class="pun">(</span><span class="str">&#34;Available search fields supported by Instana:&#34;</span><span class="pun">)</span>
+	<span class="kwd">for</span> <span class="pln">_</span><span class="pun">,</span> <span class="pln">field</span> <span class="pun">:</span><span class="pun">=</span> <span class="pln">range</span> <span class="pln">searchFieldResults</span> <span class="pun">{</span>
+		<span class="pln">fmt</span><span class="pun">.</span><span class="typ">Println</span><span class="pun">(</span><span class="pln">fmt</span><span class="pun">.</span><span class="typ">Sprintf</span><span class="pun">(</span><span class="str">&#34;%s (%s) - %s&#34;</span><span class="pun">,</span> <span class="pln">field</span><span class="pun">.</span><span class="typ">Keyword</span><span class="pun">,</span> <span class="pln">field</span><span class="pun">.</span><span class="typ">Context</span><span class="pun">,</span> <span class="pln">field</span><span class="pun">.</span><span class="typ">Description</span><span class="pun">)</span><span class="pun">)</span>
+	<span class="pun">}</span>

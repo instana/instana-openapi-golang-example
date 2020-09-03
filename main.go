@@ -1,3 +1,5 @@
+//go:generate go run gen/snippets.go
+
 package main
 
 import (

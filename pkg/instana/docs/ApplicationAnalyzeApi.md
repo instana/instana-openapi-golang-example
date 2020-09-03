@@ -14,6 +14,7 @@ Method | HTTP request | Description
 ## GetCallGroup
 
 > CallGroupsResult GetCallGroup(ctx, optional)
+
 Get grouped call metrics
 
 This endpoint retrieves the metrics for calls.    **Manditory Paramters:**    **Optional Paramters:**    **Defaults:**    **Limits:**    **Tips:**  
@@ -57,6 +58,7 @@ Name | Type | Description  | Notes
 ## GetTrace
 
 > FullTrace GetTrace(ctx, id)
+
 Get trace detail
 
 ### Required Parameters
@@ -88,6 +90,7 @@ Name | Type | Description  | Notes
 ## GetTraceGroups
 
 > TraceGroupsResult GetTraceGroups(ctx, optional)
+
 Get grouped trace metrics
 
 ### Required Parameters
@@ -129,6 +132,7 @@ Name | Type | Description  | Notes
 ## GetTraces
 
 > TraceResult GetTraces(ctx, optional)
+
 Get all traces
 
 This endpoint retrieves the metrics for traces.    **Manditory Paramters:**    **Optional Paramters:**    **Defaults:**    **Limits:**    **Tips:**  

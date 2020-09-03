@@ -12,6 +12,7 @@ Method | HTTP request | Description
 ## GetEvent
 
 > EventResult GetEvent(ctx, eventId)
+
 Get Event
 
 ### Required Parameters
@@ -43,6 +44,7 @@ Name | Type | Description  | Notes
 ## GetEvents
 
 > []EventResult GetEvents(ctx, optional)
+
 Get alerts
 
 ### Required Parameters
@@ -60,9 +62,10 @@ Optional parameters are passed through a pointer to a GetEventsOpts struct
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **windowsize** | **optional.Int64**|  | 
+ **windowSize** | **optional.Int64**|  | 
  **from** | **optional.Int64**|  | 
  **to** | **optional.Int64**|  | 
+ **excludeTriggeredBefore** | **optional.Bool**|  | 
 
 ### Return type
 

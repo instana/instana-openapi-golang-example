@@ -12,6 +12,7 @@ Method | HTTP request | Description
 ## GetBeaconGroups
 
 > BeaconGroupsResult GetBeaconGroups(ctx, optional)
+
 Get grouped beacon metrics
 
 ### Required Parameters
@@ -53,6 +54,7 @@ Name | Type | Description  | Notes
 ## GetBeacons
 
 > BeaconResult GetBeacons(ctx, optional)
+
 Get all beacons
 
 ### Required Parameters

@@ -14,6 +14,7 @@ Method | HTTP request | Description
 ## GetInfrastructureViewTree
 
 > TreeNodeResult GetInfrastructureViewTree(ctx, )
+
 Get view tree
 
 ### Required Parameters
@@ -41,6 +42,7 @@ This endpoint does not need any parameter.
 ## GetMonitoringState
 
 > MonitoringState GetMonitoringState(ctx, )
+
 Monitored host count
 
 ### Required Parameters
@@ -68,6 +70,7 @@ This endpoint does not need any parameter.
 ## GetRelatedHosts
 
 > []string GetRelatedHosts(ctx, snapshotId)
+
 Related hosts
 
 ### Required Parameters
@@ -99,6 +102,7 @@ Name | Type | Description  | Notes
 ## SoftwareVersions
 
 > []SoftwareVersion SoftwareVersions(ctx, optional)
+
 Get installed software
 
 Retrieve information about the software you are running. This includes runtime and package manager information.  The `name`, `version`, `origin` and `type` parameters are optional filters that can be used to reduce the result data set.

@@ -6,7 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**DeleteApiToken**](APITokenApi.md#DeleteApiToken) | **Delete** /api/settings/api-tokens/{apiTokenId} | Delete API token
 [**GetApiToken**](APITokenApi.md#GetApiToken) | **Get** /api/settings/api-tokens/{apiTokenId} | API token
-[**GetApiTokens**](APITokenApi.md#GetApiTokens) | **Get** /api/settings/api-tokens | All API tokes
+[**GetApiTokens**](APITokenApi.md#GetApiTokens) | **Get** /api/settings/api-tokens | All API tokens
 [**PutApiToken**](APITokenApi.md#PutApiToken) | **Put** /api/settings/api-tokens/{apiTokenId} | Create or update an API token
 
 
@@ -14,6 +14,7 @@ Method | HTTP request | Description
 ## DeleteApiToken
 
 > DeleteApiToken(ctx, apiTokenId)
+
 Delete API token
 
 ### Required Parameters
@@ -45,6 +46,7 @@ Name | Type | Description  | Notes
 ## GetApiToken
 
 > ApiToken GetApiToken(ctx, apiTokenId)
+
 API token
 
 ### Required Parameters
@@ -76,7 +78,8 @@ Name | Type | Description  | Notes
 ## GetApiTokens
 
 > []ApiToken GetApiTokens(ctx, )
-All API tokes
+
+All API tokens
 
 ### Required Parameters
 
@@ -103,6 +106,7 @@ This endpoint does not need any parameter.
 ## PutApiToken
 
 > ApiToken PutApiToken(ctx, apiTokenId, apiToken)
+
 Create or update an API token
 
 ### Required Parameters
@@ -124,7 +128,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

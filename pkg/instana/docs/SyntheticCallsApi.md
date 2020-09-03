@@ -13,6 +13,7 @@ Method | HTTP request | Description
 ## DeleteSyntheticCall
 
 > DeleteSyntheticCall(ctx, )
+
 Delete synthetic call configurations
 
 ### Required Parameters
@@ -40,6 +41,7 @@ This endpoint does not need any parameter.
 ## GetSyntheticCalls
 
 > SyntheticCallWithDefaultsConfig GetSyntheticCalls(ctx, )
+
 Synthetic call configurations
 
 ### Required Parameters
@@ -67,6 +69,7 @@ This endpoint does not need any parameter.
 ## UpdateSyntheticCall
 
 > UpdateSyntheticCall(ctx, syntheticCallConfig)
+
 Update synthetic call configurations
 
 ### Required Parameters
@@ -87,7 +90,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

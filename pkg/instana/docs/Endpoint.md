@@ -4,12 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
-**Label** | **string** |  | [optional] 
+**Id** | **string** |  | 
+**Label** | **string** |  | 
 **Type** | **string** |  | 
-**ServiceId** | **string** |  | [optional] 
+**ServiceId** | **string** |  | 
 **Technologies** | **[]string** |  | 
 **IsSynthetic** | **bool** |  | [optional] 
+**SyntheticType** | **string** |  | [optional] 
 **Synthetic** | **bool** |  | [optional] 
 **EntityType** | **string** |  | [optional] 
 

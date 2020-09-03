@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
-**Name** | **string** |  | [optional] 
+**Id** | **string** |  | 
+**Name** | **string** |  | 
 **Query** | **string** |  | 
 **Windows** | [**[]MaintenanceWindow**](MaintenanceWindow.md) |  | [optional] 
 

@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
+**Id** | **string** |  | 
 **AlertName** | **string** |  | 
 **MuteUntil** | **int64** |  | [optional] 
 **IntegrationIds** | **[]string** |  | 

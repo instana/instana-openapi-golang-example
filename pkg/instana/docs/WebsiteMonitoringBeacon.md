@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**WebsiteId** | **string** |  | [optional] 
-**WebsiteLabel** | **string** |  | [optional] 
+**WebsiteId** | **string** |  | 
+**WebsiteLabel** | **string** |  | 
 **Page** | **string** |  | [optional] 
 **Phase** | **string** |  | [optional] 
 **Timestamp** | **int64** |  | [optional] 
@@ -14,14 +14,15 @@ Name | Type | Description | Notes
 **BatchSize** | **int64** |  | [optional] 
 **AccurateTimingsAvailable** | **bool** |  | [optional] 
 **Deprecations** | **[]string** |  | [optional] 
-**PageLoadId** | **string** |  | [optional] 
-**BeaconId** | **string** |  | [optional] 
+**PageLoadId** | **string** |  | 
+**SessionId** | **string** |  | [optional] 
+**BeaconId** | **string** |  | 
 **BackendTraceId** | **string** |  | [optional] 
-**Type** | **string** |  | [optional] 
+**Type** | **string** |  | 
 **CustomEventName** | **string** |  | [optional] 
 **Meta** | **map[string]string** |  | [optional] 
-**LocationUrl** | **string** |  | [optional] 
-**LocationOrigin** | **string** |  | [optional] 
+**LocationUrl** | **string** |  | 
+**LocationOrigin** | **string** |  | 
 **LocationPath** | **string** |  | [optional] 
 **ErrorCount** | **int64** |  | [optional] 
 **ErrorMessage** | **string** |  | [optional] 
@@ -85,6 +86,9 @@ Name | Type | Description | Notes
 **ChildrenTime** | **int64** |  | [optional] 
 **FirstPaintTime** | **int64** |  | [optional] 
 **FirstContentfulPaintTime** | **int64** |  | [optional] 
+**LargestContentfulPaintTime** | **int64** |  | [optional] 
+**FirstInputDelayTime** | **int64** |  | [optional] 
+**CumulativeLayoutShift** | **float64** |  | [optional] 
 **CspBlockedUri** | **string** |  | [optional] 
 **CspEffectiveDirective** | **string** |  | [optional] 
 **CspOriginalPolicy** | **string** |  | [optional] 
@@ -93,6 +97,9 @@ Name | Type | Description | Notes
 **CspSourceFile** | **string** |  | [optional] 
 **CspLineNumber** | **int64** |  | [optional] 
 **CspColumnNumber** | **int64** |  | [optional] 
+**SnippetVersion** | **string** |  | [optional] 
+**GraphqlOperationName** | **string** |  | [optional] 
+**GraphqlOperationType** | **string** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

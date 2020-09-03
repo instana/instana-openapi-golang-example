@@ -1,12 +1,215 @@
 # Go API client for instana
 
-## Agent REST API ### Event SDK REST Web Service Using the Event SDK REST Web Service, it is possible to integrate custom health checks and other event sources into Instana. Each one running the Instana Agent can be used to feed in manual events. The agent has an endpoint which listens on `http://localhost:42699/com.instana.plugin.generic.event` and accepts the following JSON via a POST request:  ```json {     \"title\": <string>,     \"text\": <string>,     \"severity\": <integer> , -1, 5 or 10     \"timestamp\": <integer>, timestamp in milliseconds from epoch     \"duration\": <integer>, duration in milliseconds } ```  *Title* and *text* are used for display purposes.  *Severity* is an optional integer of -1, 5 and 10. A value of -1 or EMPTY will generate a Change. A value of 5 will generate a *warning Issue*, and a value of 10 will generate a *critical Issue*.  When absent, the event is treated as a change without severity. *Timestamp* is the timestamp of the event, but it is optional, in which case the current time is used. *Duration* can be used to mark a timespan for the event. It also is optional, in which case the event will be marked as \"instant\" rather than \"from-to.\"  The endpoint also accepts a batch of events, which then need to be given as an array:  ```json [     {     // event as above     },     {     // event as above     } ] ```  #### Ruby Example  ```ruby duration = (Time.now.to_f * 1000).floor - deploy_start_time_in_ms payload = {} payload[:title] = 'Deployed MyApp' payload[:text] = 'pglombardo deployed MyApp@revision' payload[:duration] = duration  uri = URI('http://localhost:42699/com.instana.plugin.generic.event') req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json') req.body = payload.to_json Net::HTTP.start(uri.hostname, uri.port) do |http|     http.request(req) end ```  #### Curl Example  ```bash curl -XPOST http://localhost:42699/com.instana.plugin.generic.event -H \"Content-Type: application/json\" -d '{\"title\":\"Custom API Events \", \"text\": \"Failure Redeploying Service Duration\", \"duration\": 5000, \"severity\": -1}' ```  #### PowerShell Example  For Powershell you can either use the standard Cmdlets `Invoke-WebRequest` or `Invoke-RestMethod`. The parameters to be provided are basically the same.  ```bash Invoke-RestMethod     -Uri http://localhost:42699/com.instana.plugin.generic.event     -Method POST     -Body '{\"title\":\"PowerShell Event \", \"text\": \"You used PowerShell to create this event!\", \"duration\": 5000, \"severity\": -1}' ```  ```bash Invoke-WebRequest     -Uri http://localhost:42699/com.instana.plugin.generic.event     -Method Post     -Body '{\"title\":\"PowerShell Event \", \"text\": \"You used PowerShell to create this event!\", \"duration\": 5000, \"severity\": -1}' ``` ## Backend REST API The Instana API allows retrieval and configuration of key data points. Among others, this API enables automatic reaction and further analysis of identified incidents as well as reporting capabilities.  The API documentation referes to two crucial parameters that you need to know about before reading further: base: This is the base URL of a tenant unit, e.g. `https://test-example.instana.io`. This is the same URL that is used to access the Instana user interface. apiToken: Requests against the Instana API require valid API tokens. An initial API token can be generated via the Instana user interface. Any additional API tokens can be generated via the API itself.  ### Example Here is an Example to use the REST API with Curl. First lets get all the available metrics with possible aggregations with a GET call.  ```bash curl --request GET \\   --url https://test-instana.instana.io/api/application-monitoring/catalog/metrics \\   --header 'authorization: apiToken xxxxxxxxxxxxxxxx' ```  Next we can get every call grouped by the endpoint name that has an error count greater then zero. As a metric we could get the mean error rate for example.  ```bash curl --request POST \\   --url https://test-instana.instana.io/api/application-monitoring/analyze/call-groups \\   --header 'authorization: apiToken xxxxxxxxxxxxxxxx' \\   --header 'content-type: application/json' \\   --data '{   \"group\":{       \"groupbyTag\":\"endpoint.name\"   },   \"tagFilters\":[    {     \"name\":\"call.error.count\",     \"value\":\"0\",     \"operator\":\"GREATER_THAN\"    }   ],   \"metrics\":[    {     \"metric\":\"errors\",     \"aggregation\":\"MEAN\"    }   ]   }' ```   ### Rate Limiting A rate limit is applied to API usage. Up to 5,000 calls per hour can be made. How many remaining calls can be made and when this call limit resets, can inspected via three headers that are part of the responses of the API server.  **X-RateLimit-Limit:** Shows the maximum number of calls that may be executed per hour.  **X-RateLimit-Remaining:** How many calls may still be executed within the current hour.  **X-RateLimit-Reset:** Time when the remaining calls will be reset to the limit. For compatibility reasons with other rate limited APIs, this date is not the date in milliseconds, but instead in seconds since 1970-01-01T00:00:00+00:00.  ## Generating REST API clients  The API is specified using the [OpenAPI v3](https://github.com/OAI/OpenAPI-Specification) (previously known as Swagger) format. You can download the current specification at our [GitHub API documentation](https://instana.github.io/openapi/openapi.yaml).  OpenAPI tries to solve the issue of ever-evolving APIs and clients lagging behind. To generate a client library for your language, you can use the [OpenAPI client generators](https://github.com/OpenAPITools/openapi-generator).  To generate a client library for Go to interact with our backend, you can use the following script (you need a JDK and `wget`):  ```bash //Download the generator to your current working directory: wget http://central.maven.org/maven2/org/openapitools/openapi-generator-cli/3.2.3/openapi-generator-cli-3.2.3.jar -O openapi-generator-cli.jar  //generate a client library that you can vendor into your repository java -jar openapi-generator-cli.jar generate -i https://instana.github.io/openapi/openapi.yaml -g go \\     -o pkg/instana/openapi \\     --skip-validate-spec  //(optional) format the Go code according to the Go code standard gofmt -s -w pkg/instana/openapi ```  The generated clients contain comprehensive READMEs. To use the client from the example above, you can start right away:  ```go import instana \"./pkg/instana/openapi\"  // readTags will read all available application monitoring tags along with their type and category func readTags() {  configuration := instana.NewConfiguration()  configuration.Host = \"tenant-unit.instana.io\"  configuration.BasePath = \"https://tenant-unit.instana.io\"   client := instana.NewAPIClient(configuration)  auth := context.WithValue(context.Background(), instana.ContextAPIKey, instana.APIKey{   Key:    apiKey,   Prefix: \"apiToken\",  })   tags, _, err := client.ApplicationCatalogApi.GetTagsForApplication(auth)  if err != nil {   fmt.Fatalf(\"Error calling the API, aborting.\")  }   for _, tag := range tags {   fmt.Printf(\"%s (%s): %s\\n\", tag.Category, tag.Type, tag.Name)  } } ``` 
+## Agent REST API
+### Event SDK REST Web Service
+Using the Event SDK REST Web Service, it is possible to integrate custom health checks and other event sources into Instana. Each one running the Instana Agent can be used to feed in manual events. The agent has an endpoint which listens on `http://localhost:42699/com.instana.plugin.generic.event` and accepts the following JSON via a POST request:
+
+```json
+{
+    \"title\": <string>,
+    \"text\": <string>,
+    \"severity\": <integer> , -1, 5 or 10
+    \"timestamp\": <integer>, timestamp in milliseconds from epoch
+    \"duration\": <integer>, duration in milliseconds
+}
+```
+
+*Title* and *text* are used for display purposes.
+
+*Severity* is an optional integer of -1, 5 and 10. A value of -1 or EMPTY will generate a Change. A value of 5 will generate a *warning Issue*, and a value of 10 will generate a *critical Issue*.
+
+When absent, the event is treated as a change without severity. *Timestamp* is the timestamp of the event, but it is optional, in which case the current time is used. *Duration* can be used to mark a timespan for the event. It also is optional, in which case the event will be marked as \"instant\" rather than \"from-to.\"
+
+The endpoint also accepts a batch of events, which then need to be given as an array:
+
+```json
+[
+    {
+    // event as above
+    },
+    {
+    // event as above
+    }
+]
+```
+
+#### Ruby Example
+
+```ruby
+duration = (Time.now.to_f * 1000).floor - deploy_start_time_in_ms
+payload = {}
+payload[:title] = 'Deployed MyApp'
+payload[:text] = 'pglombardo deployed MyApp@revision'
+payload[:duration] = duration
+
+uri = URI('http://localhost:42699/com.instana.plugin.generic.event')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req.body = payload.to_json
+Net::HTTP.start(uri.hostname, uri.port) do |http|
+    http.request(req)
+end
+```
+
+#### Curl Example
+
+```bash
+curl -XPOST http://localhost:42699/com.instana.plugin.generic.event -H \"Content-Type: application/json\" -d '{\"title\":\"Custom API Events \", \"text\": \"Failure Redeploying Service Duration\", \"duration\": 5000, \"severity\": -1}'
+```
+
+#### PowerShell Example
+
+For Powershell you can either use the standard Cmdlets `Invoke-WebRequest` or `Invoke-RestMethod`. The parameters to be provided are basically the same.
+
+```bash
+Invoke-RestMethod
+    -Uri http://localhost:42699/com.instana.plugin.generic.event
+    -Method POST
+    -Body '{\"title\":\"PowerShell Event \", \"text\": \"You used PowerShell to create this event!\", \"duration\": 5000, \"severity\": -1}'
+```
+
+```bash
+Invoke-WebRequest
+    -Uri http://localhost:42699/com.instana.plugin.generic.event
+    -Method Post
+    -Body '{\"title\":\"PowerShell Event \", \"text\": \"You used PowerShell to create this event!\", \"duration\": 5000, \"severity\": -1}'
+```
+## Backend REST API
+The Instana API allows retrieval and configuration of key data points. Among others, this API enables automatic reaction and further analysis of identified incidents as well as reporting capabilities.
+
+The API documentation referes to two crucial parameters that you need to know about before reading further:
+base: This is the base URL of a tenant unit, e.g. `https://test-example.instana.io`. This is the same URL that is used to access the Instana user interface.
+apiToken: Requests against the Instana API require valid API tokens. An initial API token can be generated via the Instana user interface. Any additional API tokens can be generated via the API itself.
+
+### Example
+Here is an Example to use the REST API with Curl. First lets get all the available metrics with possible aggregations with a GET call.
+
+```bash
+curl --request GET \\
+  --url https://test-instana.instana.io/api/application-monitoring/catalog/metrics \\
+  --header 'authorization: apiToken xxxxxxxxxxxxxxxx'
+```
+
+Next we can get every call grouped by the endpoint name that has an error count greater then zero. As a metric we could get the mean error rate for example.
+
+```bash
+curl --request POST \\
+  --url https://test-instana.instana.io/api/application-monitoring/analyze/call-groups \\
+  --header 'authorization: apiToken xxxxxxxxxxxxxxxx' \\
+  --header 'content-type: application/json' \\
+  --data '{
+  \"group\":{
+      \"groupbyTag\":\"endpoint.name\"
+  },
+  \"tagFilters\":[
+   {
+    \"name\":\"call.error.count\",
+    \"value\":\"0\",
+    \"operator\":\"GREATER_THAN\"
+   }
+  ],
+  \"metrics\":[
+   {
+    \"metric\":\"errors\",
+    \"aggregation\":\"MEAN\"
+   }
+  ]
+  }'
+```
+
+
+### Rate Limiting
+A rate limit is applied to API usage. Up to 5,000 calls per hour can be made. How many remaining calls can be made and when this call limit resets, can inspected via three headers that are part of the responses of the API server.
+
+**X-RateLimit-Limit:** Shows the maximum number of calls that may be executed per hour.
+
+**X-RateLimit-Remaining:** How many calls may still be executed within the current hour.
+
+**X-RateLimit-Reset:** Time when the remaining calls will be reset to the limit. For compatibility reasons with other rate limited APIs, this date is not the date in milliseconds, but instead in seconds since 1970-01-01T00:00:00+00:00.
+
+## Generating REST API clients
+
+The API is specified using the [OpenAPI v3](https://github.com/OAI/OpenAPI-Specification) (previously known as Swagger) format.
+You can download the current specification at our [GitHub API documentation](https://instana.github.io/openapi/openapi.yaml).
+
+OpenAPI tries to solve the issue of ever-evolving APIs and clients lagging behind. Please make sure that you always use the latest version of the generator, as a number of improvements are regularly made.
+To generate a client library for your language, you can use the [OpenAPI client generators](https://github.com/OpenAPITools/openapi-generator).
+
+### Go
+For example, to generate a client library for Go to interact with our backend, you can use the following script; mind replacing the values of the `UNIT_NAME` and `TENANT_NAME` environment variables using those for your tenant unit:
+
+```bash
+#!/bin/bash
+
+### This script assumes you have the `java` and `wget` commands on the path
+
+export UNIT_NAME='myunit' # for example: prod
+export TENANT_NAME='mytenant' # for example: awesomecompany
+
+//Download the generator to your current working directory:
+wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/4.3.1/openapi-generator-cli-4.3.1.jar -O openapi-generator-cli.jar --server-variables \"tenant=${TENANT_NAME},unit=${UNIT_NAME}\"
+
+//generate a client library that you can vendor into your repository
+java -jar openapi-generator-cli.jar generate -i https://instana.github.io/openapi/openapi.yaml -g go \\
+    -o pkg/instana/openapi \\
+    --skip-validate-spec
+
+//(optional) format the Go code according to the Go code standard
+gofmt -s -w pkg/instana/openapi
+```
+
+The generated clients contain comprehensive READMEs, and you can start right away using the client from the example above:
+
+```go
+import instana \"./pkg/instana/openapi\"
+
+// readTags will read all available application monitoring tags along with their type and category
+func readTags() {
+ configuration := instana.NewConfiguration()
+ configuration.Host = \"tenant-unit.instana.io\"
+ configuration.BasePath = \"https://tenant-unit.instana.io\"
+
+ client := instana.NewAPIClient(configuration)
+ auth := context.WithValue(context.Background(), instana.ContextAPIKey, instana.APIKey{
+  Key:    apiKey,
+  Prefix: \"apiToken\",
+ })
+
+ tags, _, err := client.ApplicationCatalogApi.GetTagsForApplication(auth)
+ if err != nil {
+  fmt.Fatalf(\"Error calling the API, aborting.\")
+ }
+
+ for _, tag := range tags {
+  fmt.Printf(\"%s (%s): %s\\n\", tag.Category, tag.Type, tag.Name)
+ }
+}
+```
+
+### Java
+Download the latest openapi generator cli:
+```
+wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/4.3.1/openapi-generator-cli-4.3.1.jar -O openapi-generator-cli.jar
+```
+
+A list for calls for different java http client implementations, which creates a valid generated source code for our spec.
+```
+//Nativ Java HTTP Client
+java -jar openapi-generator-cli.jar generate -i https://instana.github.io/openapi/openapi.yaml -g java -o pkg/instana/openapi --skip-validate-spec  -p dateLibrary=java8 --library native
+
+//Spring WebClient
+java -jar openapi-generator-cli.jar generate -i https://instana.github.io/openapi/openapi.yaml -g java -o pkg/instana/openapi --skip-validate-spec  -p dateLibrary=java8,hideGenerationTimestamp=true --library webclient
+
+//Spring RestTemplate
+java -jar openapi-generator-cli.jar generate -i https://instana.github.io/openapi/openapi.yaml -g java -o pkg/instana/openapi --skip-validate-spec  -p dateLibrary=java8,hideGenerationTimestamp=true --library resttemplate
+
+```
+
 
 ## Overview
 This API client was generated by the [OpenAPI Generator](https://openapi-generator.tech) project.  By using the [OpenAPI-spec](https://www.openapis.org/) from a remote server, you can easily generate an API client.
 
-- API version: 1.165.646
-- Package version: 162
+- API version: 1.185.824
+- Package version: 1.185.824
 - Build package: org.openapitools.codegen.languages.GoClientCodegen
 For more information, please visit [http://instana.com](http://instana.com)
 
@@ -35,7 +238,7 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *APITokenApi* | [**DeleteApiToken**](docs/APITokenApi.md#deleteapitoken) | **Delete** /api/settings/api-tokens/{apiTokenId} | Delete API token
 *APITokenApi* | [**GetApiToken**](docs/APITokenApi.md#getapitoken) | **Get** /api/settings/api-tokens/{apiTokenId} | API token
-*APITokenApi* | [**GetApiTokens**](docs/APITokenApi.md#getapitokens) | **Get** /api/settings/api-tokens | All API tokes
+*APITokenApi* | [**GetApiTokens**](docs/APITokenApi.md#getapitokens) | **Get** /api/settings/api-tokens | All API tokens
 *APITokenApi* | [**PutApiToken**](docs/APITokenApi.md#putapitoken) | **Put** /api/settings/api-tokens/{apiTokenId} | Create or update an API token
 *ApplicationAnalyzeApi* | [**GetCallGroup**](docs/ApplicationAnalyzeApi.md#getcallgroup) | **Post** /api/application-monitoring/analyze/call-groups | Get grouped call metrics
 *ApplicationAnalyzeApi* | [**GetTrace**](docs/ApplicationAnalyzeApi.md#gettrace) | **Get** /api/application-monitoring/analyze/traces/{id} | Get trace detail
@@ -51,45 +254,42 @@ Class | Method | HTTP request | Description
 *ApplicationResourcesApi* | [**GetApplications**](docs/ApplicationResourcesApi.md#getapplications) | **Get** /api/application-monitoring/applications | Get applications
 *ApplicationResourcesApi* | [**GetServices**](docs/ApplicationResourcesApi.md#getservices) | **Get** /api/application-monitoring/services | Get services
 *ApplicationSettingsApi* | [**AddApplicationConfig**](docs/ApplicationSettingsApi.md#addapplicationconfig) | **Post** /api/application-monitoring/settings/application | Add application configuration
-*ApplicationSettingsApi* | [**AddEndpointConfig**](docs/ApplicationSettingsApi.md#addendpointconfig) | **Post** /api/application-monitoring/settings/service | Add service configuration
+*ApplicationSettingsApi* | [**AddServiceConfig**](docs/ApplicationSettingsApi.md#addserviceconfig) | **Post** /api/application-monitoring/settings/service | Add service configuration
 *ApplicationSettingsApi* | [**CreateEndpointConfig**](docs/ApplicationSettingsApi.md#createendpointconfig) | **Post** /api/application-monitoring/settings/http-endpoint | Create endpoint configuration
 *ApplicationSettingsApi* | [**DeleteApplicationConfig**](docs/ApplicationSettingsApi.md#deleteapplicationconfig) | **Delete** /api/application-monitoring/settings/application/{id} | Delete application configuration
 *ApplicationSettingsApi* | [**DeleteEndpointConfig**](docs/ApplicationSettingsApi.md#deleteendpointconfig) | **Delete** /api/application-monitoring/settings/http-endpoint/{id} | Delete endpoint configuration
-*ApplicationSettingsApi* | [**DeleteEndpointConfig1**](docs/ApplicationSettingsApi.md#deleteendpointconfig1) | **Delete** /api/application-monitoring/settings/service/{id} | Delete service configuration
+*ApplicationSettingsApi* | [**DeleteServiceConfig**](docs/ApplicationSettingsApi.md#deleteserviceconfig) | **Delete** /api/application-monitoring/settings/service/{id} | Delete service configuration
 *ApplicationSettingsApi* | [**GetApplicationConfig**](docs/ApplicationSettingsApi.md#getapplicationconfig) | **Get** /api/application-monitoring/settings/application/{id} | Application configuration
 *ApplicationSettingsApi* | [**GetApplicationConfigs**](docs/ApplicationSettingsApi.md#getapplicationconfigs) | **Get** /api/application-monitoring/settings/application | All Application configurations
 *ApplicationSettingsApi* | [**GetEndpointConfig**](docs/ApplicationSettingsApi.md#getendpointconfig) | **Get** /api/application-monitoring/settings/http-endpoint/{id} | Endpoint configuration
 *ApplicationSettingsApi* | [**GetEndpointConfigs**](docs/ApplicationSettingsApi.md#getendpointconfigs) | **Get** /api/application-monitoring/settings/http-endpoint | All Endpoint configurations
 *ApplicationSettingsApi* | [**GetServiceConfig**](docs/ApplicationSettingsApi.md#getserviceconfig) | **Get** /api/application-monitoring/settings/service/{id} | Service configuration
 *ApplicationSettingsApi* | [**GetServiceConfigs**](docs/ApplicationSettingsApi.md#getserviceconfigs) | **Get** /api/application-monitoring/settings/service | All service configurations
-*ApplicationSettingsApi* | [**OrderEndpointConfig**](docs/ApplicationSettingsApi.md#orderendpointconfig) | **Put** /api/application-monitoring/settings/service/order | Order of service configuration
+*ApplicationSettingsApi* | [**OrderServiceConfig**](docs/ApplicationSettingsApi.md#orderserviceconfig) | **Put** /api/application-monitoring/settings/service/order | Order of service configuration
 *ApplicationSettingsApi* | [**PutApplicationConfig**](docs/ApplicationSettingsApi.md#putapplicationconfig) | **Put** /api/application-monitoring/settings/application/{id} | Update application configuration
-*ApplicationSettingsApi* | [**PutEndpointConfig**](docs/ApplicationSettingsApi.md#putendpointconfig) | **Put** /api/application-monitoring/settings/service/{id} | Update service configuration
+*ApplicationSettingsApi* | [**PutServiceConfig**](docs/ApplicationSettingsApi.md#putserviceconfig) | **Put** /api/application-monitoring/settings/service/{id} | Update service configuration
+*ApplicationSettingsApi* | [**ReplaceAll**](docs/ApplicationSettingsApi.md#replaceall) | **Put** /api/application-monitoring/settings/service | Replace all service configurations
 *ApplicationSettingsApi* | [**UpdateEndpointConfig**](docs/ApplicationSettingsApi.md#updateendpointconfig) | **Put** /api/application-monitoring/settings/http-endpoint/{id} | Update endpoint configuration
 *AuditLogApi* | [**GetAuditLogs**](docs/AuditLogApi.md#getauditlogs) | **Get** /api/settings/auditlog | Audit log
-*DefaultApi* | [**CreateSourceMapConfig**](docs/DefaultApi.md#createsourcemapconfig) | **Post** /api/website-monitoring/config/{websiteId}/sourceMap | 
-*DefaultApi* | [**Delete**](docs/DefaultApi.md#delete) | **Delete** /api/events/settings/website-alert-configs/{id} | 
-*DefaultApi* | [**DeleteSourceMapConfig**](docs/DefaultApi.md#deletesourcemapconfig) | **Delete** /api/website-monitoring/config/{websiteId}/sourceMap/{sourceMapConfigId} | 
-*DefaultApi* | [**Disable**](docs/DefaultApi.md#disable) | **Put** /api/events/settings/website-alert-configs/{id}/disable | 
-*DefaultApi* | [**Enable**](docs/DefaultApi.md#enable) | **Put** /api/events/settings/website-alert-configs/{id}/enable | 
-*DefaultApi* | [**GetSourceMapConfig**](docs/DefaultApi.md#getsourcemapconfig) | **Get** /api/website-monitoring/config/{websiteId}/sourceMap/{sourceMapConfigId} | 
-*DefaultApi* | [**GetSourceMapConfigs**](docs/DefaultApi.md#getsourcemapconfigs) | **Get** /api/website-monitoring/config/{websiteId}/sourceMap | 
-*DefaultApi* | [**UpdateSourceMapConfig**](docs/DefaultApi.md#updatesourcemapconfig) | **Put** /api/website-monitoring/config/{websiteId}/sourceMap/{sourceMapConfigId} | 
-*EventSettingsApi* | [**Create**](docs/EventSettingsApi.md#create) | **Post** /api/events/settings/website-alert-configs | Creates a new Website Alert Config
+*EventSettingsApi* | [**CreateWebsiteAlertConfig**](docs/EventSettingsApi.md#createwebsitealertconfig) | **Post** /api/events/settings/website-alert-configs | Create Website Alert Config
 *EventSettingsApi* | [**DeleteAlert**](docs/EventSettingsApi.md#deletealert) | **Delete** /api/events/settings/alerts/{id} | Delete alerting
 *EventSettingsApi* | [**DeleteAlertingChannel**](docs/EventSettingsApi.md#deletealertingchannel) | **Delete** /api/events/settings/alertingChannels/{id} | Delete alerting channel
 *EventSettingsApi* | [**DeleteBuiltInEventSpecification**](docs/EventSettingsApi.md#deletebuiltineventspecification) | **Delete** /api/events/settings/event-specifications/built-in/{eventSpecificationId} | Delete built-in event specification
 *EventSettingsApi* | [**DeleteCustomEventSpecification**](docs/EventSettingsApi.md#deletecustomeventspecification) | **Delete** /api/events/settings/event-specifications/custom/{eventSpecificationId} | Delete custom event specification
+*EventSettingsApi* | [**DeleteWebsiteAlertConfig**](docs/EventSettingsApi.md#deletewebsitealertconfig) | **Delete** /api/events/settings/website-alert-configs/{id} | Delete Website Alert Config
 *EventSettingsApi* | [**DisableBuiltInEventSpecification**](docs/EventSettingsApi.md#disablebuiltineventspecification) | **Post** /api/events/settings/event-specifications/built-in/{eventSpecificationId}/disable | Disable built-in event specification
 *EventSettingsApi* | [**DisableCustomEventSpecification**](docs/EventSettingsApi.md#disablecustomeventspecification) | **Post** /api/events/settings/event-specifications/custom/{eventSpecificationId}/disable | Disable custom event specification
+*EventSettingsApi* | [**DisableWebsiteAlertConfig**](docs/EventSettingsApi.md#disablewebsitealertconfig) | **Put** /api/events/settings/website-alert-configs/{id}/disable | Disable Website Alert Config
 *EventSettingsApi* | [**EnableBuiltInEventSpecification**](docs/EventSettingsApi.md#enablebuiltineventspecification) | **Post** /api/events/settings/event-specifications/built-in/{eventSpecificationId}/enable | Enable built-in event specification
 *EventSettingsApi* | [**EnableCustomEventSpecification**](docs/EventSettingsApi.md#enablecustomeventspecification) | **Post** /api/events/settings/event-specifications/custom/{eventSpecificationId}/enable | Enable custom event specification
-*EventSettingsApi* | [**Find**](docs/EventSettingsApi.md#find) | **Get** /api/events/settings/website-alert-configs/{id} | Find a Website Alert Config by ID. This will deliver deleted configs too
-*EventSettingsApi* | [**FindAllActive**](docs/EventSettingsApi.md#findallactive) | **Get** /api/events/settings/website-alert-configs | Find all Website Alert Configs
-*EventSettingsApi* | [**FindVersions**](docs/EventSettingsApi.md#findversions) | **Get** /api/events/settings/website-alert-configs/{id}/versions | Find all versions of a Website Alert Config by ID. This will deliver deleted configs too
+*EventSettingsApi* | [**EnableWebsiteAlertConfig**](docs/EventSettingsApi.md#enablewebsitealertconfig) | **Put** /api/events/settings/website-alert-configs/{id}/enable | Enable Website Alert Config
+*EventSettingsApi* | [**FindActiveWebsiteAlertConfigs**](docs/EventSettingsApi.md#findactivewebsitealertconfigs) | **Get** /api/events/settings/website-alert-configs | All Website Alert Configs
+*EventSettingsApi* | [**FindWebsiteAlertConfig**](docs/EventSettingsApi.md#findwebsitealertconfig) | **Get** /api/events/settings/website-alert-configs/{id} | Get Website Alert Config
+*EventSettingsApi* | [**FindWebsiteAlertConfigVersions**](docs/EventSettingsApi.md#findwebsitealertconfigversions) | **Get** /api/events/settings/website-alert-configs/{id}/versions | Get versions of Website Alert Config
 *EventSettingsApi* | [**GetAlert**](docs/EventSettingsApi.md#getalert) | **Get** /api/events/settings/alerts/{id} | Alerting
 *EventSettingsApi* | [**GetAlertingChannel**](docs/EventSettingsApi.md#getalertingchannel) | **Get** /api/events/settings/alertingChannels/{id} | Alerting channel
 *EventSettingsApi* | [**GetAlertingChannels**](docs/EventSettingsApi.md#getalertingchannels) | **Get** /api/events/settings/alertingChannels | All alerting channels
+*EventSettingsApi* | [**GetAlertingChannelsOverview**](docs/EventSettingsApi.md#getalertingchannelsoverview) | **Get** /api/events/settings/alertingChannels/infos | Overview over all alerting channels
 *EventSettingsApi* | [**GetAlertingConfigurationInfos**](docs/EventSettingsApi.md#getalertingconfigurationinfos) | **Get** /api/events/settings/alerts/infos | All alerting configuration info
 *EventSettingsApi* | [**GetAlerts**](docs/EventSettingsApi.md#getalerts) | **Get** /api/events/settings/alerts | All Alerting
 *EventSettingsApi* | [**GetBuiltInEventSpecification**](docs/EventSettingsApi.md#getbuiltineventspecification) | **Get** /api/events/settings/event-specifications/built-in/{eventSpecificationId} | Built-in event specifications
@@ -97,19 +297,27 @@ Class | Method | HTTP request | Description
 *EventSettingsApi* | [**GetCustomEventSpecification**](docs/EventSettingsApi.md#getcustomeventspecification) | **Get** /api/events/settings/event-specifications/custom/{eventSpecificationId} | Custom event specification
 *EventSettingsApi* | [**GetCustomEventSpecifications**](docs/EventSettingsApi.md#getcustomeventspecifications) | **Get** /api/events/settings/event-specifications/custom | All custom event specifications
 *EventSettingsApi* | [**GetEventSpecificationInfos**](docs/EventSettingsApi.md#geteventspecificationinfos) | **Get** /api/events/settings/event-specifications/infos | Summary of all built-in and custom event specifications
-*EventSettingsApi* | [**GetEventSpecificationInfosByIds**](docs/EventSettingsApi.md#geteventspecificationinfosbyids) | **Post** /api/events/settings/event-specifications/infos | Summary of all built-in and custom event specifications by IDs
+*EventSettingsApi* | [**GetEventSpecificationInfosByIds**](docs/EventSettingsApi.md#geteventspecificationinfosbyids) | **Post** /api/events/settings/event-specifications/infos | All built-in and custom event specifications
 *EventSettingsApi* | [**GetSystemRules**](docs/EventSettingsApi.md#getsystemrules) | **Get** /api/events/settings/event-specifications/custom/systemRules | All system rules for custom event specifications
 *EventSettingsApi* | [**PutAlert**](docs/EventSettingsApi.md#putalert) | **Put** /api/events/settings/alerts/{id} | Update alerting
 *EventSettingsApi* | [**PutAlertingChannel**](docs/EventSettingsApi.md#putalertingchannel) | **Put** /api/events/settings/alertingChannels/{id} | Update alerting channel
-*EventSettingsApi* | [**PutCustomEventSpecification**](docs/EventSettingsApi.md#putcustomeventspecification) | **Put** /api/events/settings/event-specifications/custom/{eventSpecificationId} | Update custom event specification
+*EventSettingsApi* | [**PutCustomEventSpecification**](docs/EventSettingsApi.md#putcustomeventspecification) | **Put** /api/events/settings/event-specifications/custom/{eventSpecificationId} | Create or Update custom event specification
 *EventSettingsApi* | [**SendTestAlerting**](docs/EventSettingsApi.md#sendtestalerting) | **Put** /api/events/settings/alertingChannels/test | Test alerting channel
-*EventSettingsApi* | [**Update**](docs/EventSettingsApi.md#update) | **Post** /api/events/settings/website-alert-configs/{id} | Updates an existing Website Alert Config
+*EventSettingsApi* | [**UpdateWebsiteAlertConfig**](docs/EventSettingsApi.md#updatewebsitealertconfig) | **Post** /api/events/settings/website-alert-configs/{id} | Update Website Alert Config
 *EventsApi* | [**GetEvent**](docs/EventsApi.md#getevent) | **Get** /api/events/{eventId} | Get Event
 *EventsApi* | [**GetEvents**](docs/EventsApi.md#getevents) | **Get** /api/events | Get alerts
+*GroupsApi* | [**CreateGroup**](docs/GroupsApi.md#creategroup) | **Post** /api/settings/group | Create group
+*GroupsApi* | [**DeleteGroup**](docs/GroupsApi.md#deletegroup) | **Delete** /api/settings/group/{id} | Delete groups
+*GroupsApi* | [**GetGroup**](docs/GroupsApi.md#getgroup) | **Get** /api/settings/group/{id} | Get group
+*GroupsApi* | [**GetGroups**](docs/GroupsApi.md#getgroups) | **Get** /api/settings/groups | All groups
+*GroupsApi* | [**GetGroupsByUser**](docs/GroupsApi.md#getgroupsbyuser) | **Get** /api/settings/groups/user/{email} | Get groups
+*GroupsApi* | [**UpdateGroup**](docs/GroupsApi.md#updategroup) | **Put** /api/settings/group/{id} | Update group
+*GroupsApi* | [**UpdateGroups**](docs/GroupsApi.md#updategroups) | **Put** /api/settings/groups | Create groups
 *HealthApi* | [**GetHealthState**](docs/HealthApi.md#gethealthstate) | **Get** /api/instana/health | Basic health traffic light
 *HealthApi* | [**GetVersion**](docs/HealthApi.md#getversion) | **Get** /api/instana/version | API version information
 *InfrastructureCatalogApi* | [**GetInfrastructureCatalogMetrics**](docs/InfrastructureCatalogApi.md#getinfrastructurecatalogmetrics) | **Get** /api/infrastructure-monitoring/catalog/metrics/{plugin} | Get metric catalog
 *InfrastructureCatalogApi* | [**GetInfrastructureCatalogPlugins**](docs/InfrastructureCatalogApi.md#getinfrastructurecatalogplugins) | **Get** /api/infrastructure-monitoring/catalog/plugins | Get plugin catalog
+*InfrastructureCatalogApi* | [**GetInfrastructureCatalogPluginsWithCustomMetrics**](docs/InfrastructureCatalogApi.md#getinfrastructurecatalogpluginswithcustommetrics) | **Get** /api/infrastructure-monitoring/catalog/plugins-with-custom-metrics | Get all plugins with custom metrics catalog
 *InfrastructureCatalogApi* | [**GetInfrastructureCatalogSearchFields**](docs/InfrastructureCatalogApi.md#getinfrastructurecatalogsearchfields) | **Get** /api/infrastructure-monitoring/catalog/search | get search field catalog
 *InfrastructureMetricsApi* | [**GetInfrastructureMetrics**](docs/InfrastructureMetricsApi.md#getinfrastructuremetrics) | **Post** /api/infrastructure-monitoring/metrics | Get infrastructure metrics
 *InfrastructureMetricsApi* | [**GetSnapshot**](docs/InfrastructureMetricsApi.md#getsnapshot) | **Get** /api/infrastructure-monitoring/snapshots/{id} | Get snapshot details
@@ -122,13 +330,20 @@ Class | Method | HTTP request | Description
 *MaintenanceConfigurationApi* | [**GetMaintenanceConfig**](docs/MaintenanceConfigurationApi.md#getmaintenanceconfig) | **Get** /api/settings/maintenance/{id} | Maintenance configuration
 *MaintenanceConfigurationApi* | [**GetMaintenanceConfigs**](docs/MaintenanceConfigurationApi.md#getmaintenanceconfigs) | **Get** /api/settings/maintenance | All maintenance configurations
 *MaintenanceConfigurationApi* | [**PutMaintenanceConfig**](docs/MaintenanceConfigurationApi.md#putmaintenanceconfig) | **Put** /api/settings/maintenance/{id} | Create or update maintenance configuration
-*MaintenanceConfigurationApi* | [**ScheduleMaintenanceConfig**](docs/MaintenanceConfigurationApi.md#schedulemaintenanceconfig) | **Put** /api/settings/maintenance/schedule/{id} | Schedule maintenance
-*MaintenanceConfigurationApi* | [**UnscheduleMaintenanceConfig**](docs/MaintenanceConfigurationApi.md#unschedulemaintenanceconfig) | **Put** /api/settings/maintenance/unschedule/{id} | Unschedule maintenance
 *ReleasesApi* | [**DeleteRelease**](docs/ReleasesApi.md#deleterelease) | **Delete** /api/releases/{releaseId} | Delete release
 *ReleasesApi* | [**GetAllReleases**](docs/ReleasesApi.md#getallreleases) | **Get** /api/releases | Get all releases
 *ReleasesApi* | [**GetRelease**](docs/ReleasesApi.md#getrelease) | **Get** /api/releases/{releaseId} | Get release
 *ReleasesApi* | [**PostRelease**](docs/ReleasesApi.md#postrelease) | **Post** /api/releases | Create release
 *ReleasesApi* | [**PutRelease**](docs/ReleasesApi.md#putrelease) | **Put** /api/releases/{releaseId} | Update release
+*SLIReportApi* | [**GetSli**](docs/SLIReportApi.md#getsli) | **Get** /api/sli/report/{sliId} | Generate SLI report
+*SLISettingsApi* | [**CreateSli**](docs/SLISettingsApi.md#createsli) | **Post** /api/settings/sli | Create SLI Config
+*SLISettingsApi* | [**Delete**](docs/SLISettingsApi.md#delete) | **Delete** /api/settings/sli/{id} | Delete SLI Config
+*SLISettingsApi* | [**GetSli1**](docs/SLISettingsApi.md#getsli1) | **Get** /api/settings/sli/{id} | Get SLI Config
+*SLISettingsApi* | [**GetSli2**](docs/SLISettingsApi.md#getsli2) | **Get** /api/settings/sli | Get All SLI Configs
+*SLISettingsApi* | [**PutSli**](docs/SLISettingsApi.md#putsli) | **Put** /api/settings/sli/{id} | Update SLI Config
+*SessionSettingsApi* | [**DeleteSessionSettings**](docs/SessionSettingsApi.md#deletesessionsettings) | **Delete** /api/settings/session | Delete session settings
+*SessionSettingsApi* | [**GetSessionSettings**](docs/SessionSettingsApi.md#getsessionsettings) | **Get** /api/settings/session | Session settings
+*SessionSettingsApi* | [**SetSessionSettings**](docs/SessionSettingsApi.md#setsessionsettings) | **Put** /api/settings/session | Configure session settings
 *SyntheticCallsApi* | [**DeleteSyntheticCall**](docs/SyntheticCallsApi.md#deletesyntheticcall) | **Delete** /api/settings/synthetic-calls | Delete synthetic call configurations
 *SyntheticCallsApi* | [**GetSyntheticCalls**](docs/SyntheticCallsApi.md#getsyntheticcalls) | **Get** /api/settings/synthetic-calls | Synthetic call configurations
 *SyntheticCallsApi* | [**UpdateSyntheticCall**](docs/SyntheticCallsApi.md#updatesyntheticcall) | **Put** /api/settings/synthetic-calls | Update synthetic call configurations
@@ -141,7 +356,7 @@ Class | Method | HTTP request | Description
 *UserApi* | [**GetInvitations**](docs/UserApi.md#getinvitations) | **Get** /api/settings/users/invitations | All pending invitations
 *UserApi* | [**GetRole**](docs/UserApi.md#getrole) | **Get** /api/settings/roles/{roleId} | Role
 *UserApi* | [**GetRoles**](docs/UserApi.md#getroles) | **Get** /api/settings/roles | All roles
-*UserApi* | [**GetUsers**](docs/UserApi.md#getusers) | **Get** /api/settings/users | All tenant users (excluding pending invitations)
+*UserApi* | [**GetUsers**](docs/UserApi.md#getusers) | **Get** /api/settings/users | All users (without invitations)
 *UserApi* | [**GetUsersIncludingInvitations**](docs/UserApi.md#getusersincludinginvitations) | **Get** /api/settings/users/overview | All users (incl. invitations)
 *UserApi* | [**PutRole**](docs/UserApi.md#putrole) | **Put** /api/settings/roles/{roleId} | Create or update role
 *UserApi* | [**RemoveUserFromTenant**](docs/UserApi.md#removeuserfromtenant) | **Delete** /api/settings/users/{userId} | Remove user from tenant
@@ -153,7 +368,8 @@ Class | Method | HTTP request | Description
 *WebsiteCatalogApi* | [**GetWebsiteCatalogMetrics**](docs/WebsiteCatalogApi.md#getwebsitecatalogmetrics) | **Get** /api/website-monitoring/catalog/metrics | Metric catalog
 *WebsiteCatalogApi* | [**GetWebsiteCatalogTags**](docs/WebsiteCatalogApi.md#getwebsitecatalogtags) | **Get** /api/website-monitoring/catalog/tags | Filter tag catalog
 *WebsiteConfigurationApi* | [**Delete1**](docs/WebsiteConfigurationApi.md#delete1) | **Delete** /api/website-monitoring/config/{websiteId} | Remove website
-*WebsiteConfigurationApi* | [**Get**](docs/WebsiteConfigurationApi.md#get) | **Get** /api/website-monitoring/config | Get configured websites
+*WebsiteConfigurationApi* | [**Get**](docs/WebsiteConfigurationApi.md#get) | **Get** /api/website-monitoring/config/{websiteId} | Get configured website
+*WebsiteConfigurationApi* | [**GetWebsites**](docs/WebsiteConfigurationApi.md#getwebsites) | **Get** /api/website-monitoring/config | Get configured websites
 *WebsiteConfigurationApi* | [**Post**](docs/WebsiteConfigurationApi.md#post) | **Post** /api/website-monitoring/config | Configure new website
 *WebsiteConfigurationApi* | [**Rename**](docs/WebsiteConfigurationApi.md#rename) | **Put** /api/website-monitoring/config/{websiteId} | Rename website
 *WebsiteMetricsApi* | [**GetBeaconMetrics**](docs/WebsiteMetricsApi.md#getbeaconmetrics) | **Post** /api/website-monitoring/metrics | Get beacon metrics
@@ -164,7 +380,6 @@ Class | Method | HTTP request | Description
 
  - [AbstractIntegration](docs/AbstractIntegration.md)
  - [AbstractRule](docs/AbstractRule.md)
- - [AlertRule](docs/AlertRule.md)
  - [AlertingConfiguration](docs/AlertingConfiguration.md)
  - [AlertingConfigurationWithLastUpdated](docs/AlertingConfigurationWithLastUpdated.md)
  - [ApiToken](docs/ApiToken.md)
@@ -174,33 +389,39 @@ Class | Method | HTTP request | Description
  - [ApplicationItem](docs/ApplicationItem.md)
  - [ApplicationMetricResult](docs/ApplicationMetricResult.md)
  - [ApplicationResult](docs/ApplicationResult.md)
+ - [ApplicationSliEntity](docs/ApplicationSliEntity.md)
+ - [ApplicationSliEntityAllOf](docs/ApplicationSliEntityAllOf.md)
+ - [ApplicationTagFilter](docs/ApplicationTagFilter.md)
  - [AuditLogEntry](docs/AuditLogEntry.md)
  - [AuditLogResponse](docs/AuditLogResponse.md)
- - [BaselineSegment](docs/BaselineSegment.md)
+ - [AvailabilitySliEntity](docs/AvailabilitySliEntity.md)
+ - [AvailabilitySliEntityAllOf](docs/AvailabilitySliEntityAllOf.md)
  - [BeaconGroupsResult](docs/BeaconGroupsResult.md)
  - [BeaconResult](docs/BeaconResult.md)
  - [BinaryOperatorDto](docs/BinaryOperatorDto.md)
+ - [BinaryOperatorDtoAllOf](docs/BinaryOperatorDtoAllOf.md)
  - [BuiltInEventSpecification](docs/BuiltInEventSpecification.md)
  - [BuiltInEventSpecificationWithLastUpdated](docs/BuiltInEventSpecificationWithLastUpdated.md)
  - [CallGroupsItem](docs/CallGroupsItem.md)
  - [CallGroupsResult](docs/CallGroupsResult.md)
  - [CloudfoundryPhysicalContext](docs/CloudfoundryPhysicalContext.md)
  - [ConfigVersion](docs/ConfigVersion.md)
- - [Connection](docs/Connection.md)
  - [CursorPagination](docs/CursorPagination.md)
  - [CustomEventSpecification](docs/CustomEventSpecification.md)
  - [CustomEventSpecificationWithLastUpdated](docs/CustomEventSpecificationWithLastUpdated.md)
- - [CustomThresholdEventSpecificationMeta](docs/CustomThresholdEventSpecificationMeta.md)
  - [EmailIntegration](docs/EmailIntegration.md)
+ - [EmailIntegrationAllOf](docs/EmailIntegrationAllOf.md)
  - [Endpoint](docs/Endpoint.md)
  - [EndpointItem](docs/EndpointItem.md)
  - [EndpointMetricResult](docs/EndpointMetricResult.md)
  - [EndpointResult](docs/EndpointResult.md)
  - [EntityVerificationRule](docs/EntityVerificationRule.md)
+ - [EntityVerificationRuleAllOf](docs/EntityVerificationRuleAllOf.md)
  - [EventFilteringConfiguration](docs/EventFilteringConfiguration.md)
  - [EventResult](docs/EventResult.md)
  - [EventSpecificationInfo](docs/EventSpecificationInfo.md)
  - [FixedHttpPathSegmentMatchingRule](docs/FixedHttpPathSegmentMatchingRule.md)
+ - [FixedHttpPathSegmentMatchingRuleAllOf](docs/FixedHttpPathSegmentMatchingRuleAllOf.md)
  - [FullTrace](docs/FullTrace.md)
  - [GetApplications](docs/GetApplications.md)
  - [GetCallGroups](docs/GetCallGroups.md)
@@ -213,35 +434,49 @@ Class | Method | HTTP request | Description
  - [GetWebsiteBeacons](docs/GetWebsiteBeacons.md)
  - [GetWebsiteMetrics](docs/GetWebsiteMetrics.md)
  - [GoogleChatIntegration](docs/GoogleChatIntegration.md)
+ - [GoogleChatIntegrationAllOf](docs/GoogleChatIntegrationAllOf.md)
  - [Group](docs/Group.md)
  - [HealthState](docs/HealthState.md)
  - [HistoricBaseline](docs/HistoricBaseline.md)
+ - [HistoricBaselineAllOf](docs/HistoricBaselineAllOf.md)
  - [HttpEndpointConfig](docs/HttpEndpointConfig.md)
  - [HttpEndpointRule](docs/HttpEndpointRule.md)
  - [HttpPathSegmentMatchingRule](docs/HttpPathSegmentMatchingRule.md)
  - [HyperParam](docs/HyperParam.md)
  - [InfrastructureMetricResult](docs/InfrastructureMetricResult.md)
+ - [InfrastructureSliEntity](docs/InfrastructureSliEntity.md)
+ - [InfrastructureSliEntityAllOf](docs/InfrastructureSliEntityAllOf.md)
  - [IngestionOffsetCursor](docs/IngestionOffsetCursor.md)
  - [InstanaVersionInfo](docs/InstanaVersionInfo.md)
+ - [IntegrationOverview](docs/IntegrationOverview.md)
  - [KubernetesPhysicalContext](docs/KubernetesPhysicalContext.md)
  - [LogEntryActor](docs/LogEntryActor.md)
  - [MaintenanceConfig](docs/MaintenanceConfig.md)
  - [MaintenanceConfigWithLastUpdated](docs/MaintenanceConfigWithLastUpdated.md)
  - [MaintenanceWindow](docs/MaintenanceWindow.md)
  - [MatchAllHttpPathSegmentMatchingRule](docs/MatchAllHttpPathSegmentMatchingRule.md)
+ - [MatchExpressionDto](docs/MatchExpressionDto.md)
+ - [Member](docs/Member.md)
  - [MetricConfiguration](docs/MetricConfiguration.md)
  - [MetricDescription](docs/MetricDescription.md)
  - [MetricInstance](docs/MetricInstance.md)
  - [MetricItem](docs/MetricItem.md)
+ - [MetricPattern](docs/MetricPattern.md)
  - [MonitoringState](docs/MonitoringState.md)
+ - [NewApplicationConfig](docs/NewApplicationConfig.md)
  - [Office365Integration](docs/Office365Integration.md)
  - [OpsgenieIntegration](docs/OpsgenieIntegration.md)
+ - [OpsgenieIntegrationAllOf](docs/OpsgenieIntegrationAllOf.md)
  - [Order](docs/Order.md)
  - [PagerdutyIntegration](docs/PagerdutyIntegration.md)
+ - [PagerdutyIntegrationAllOf](docs/PagerdutyIntegrationAllOf.md)
  - [Pagination](docs/Pagination.md)
  - [PathParameterHttpPathSegmentMatchingRule](docs/PathParameterHttpPathSegmentMatchingRule.md)
+ - [PermissionSet](docs/PermissionSet.md)
  - [PhysicalContext](docs/PhysicalContext.md)
  - [PluginResult](docs/PluginResult.md)
+ - [PrometheusWebhookIntegration](docs/PrometheusWebhookIntegration.md)
+ - [PrometheusWebhookIntegrationAllOf](docs/PrometheusWebhookIntegrationAllOf.md)
  - [Release](docs/Release.md)
  - [ReleaseWithMetadata](docs/ReleaseWithMetadata.md)
  - [Role](docs/Role.md)
@@ -253,7 +488,15 @@ Class | Method | HTTP request | Description
  - [ServiceMatchingRule](docs/ServiceMatchingRule.md)
  - [ServiceMetricResult](docs/ServiceMetricResult.md)
  - [ServiceResult](docs/ServiceResult.md)
+ - [SessionSettings](docs/SessionSettings.md)
  - [SlackIntegration](docs/SlackIntegration.md)
+ - [SlackIntegrationAllOf](docs/SlackIntegrationAllOf.md)
+ - [SliConfiguration](docs/SliConfiguration.md)
+ - [SliConfigurationWithLastUpdated](docs/SliConfigurationWithLastUpdated.md)
+ - [SliEntity](docs/SliEntity.md)
+ - [SliReport](docs/SliReport.md)
+ - [SlownessWebsiteAlertRule](docs/SlownessWebsiteAlertRule.md)
+ - [SlownessWebsiteAlertRuleAllOf](docs/SlownessWebsiteAlertRuleAllOf.md)
  - [SnapshotItem](docs/SnapshotItem.md)
  - [SnapshotPreview](docs/SnapshotPreview.md)
  - [SnapshotResult](docs/SnapshotResult.md)
@@ -261,21 +504,29 @@ Class | Method | HTTP request | Description
  - [SoftwareVersion](docs/SoftwareVersion.md)
  - [Span](docs/Span.md)
  - [SpanRelation](docs/SpanRelation.md)
- - [SpecificJsErrorsAlertRule](docs/SpecificJsErrorsAlertRule.md)
+ - [SpecificJsErrorsWebsiteAlertRule](docs/SpecificJsErrorsWebsiteAlertRule.md)
+ - [SpecificJsErrorsWebsiteAlertRuleAllOf](docs/SpecificJsErrorsWebsiteAlertRuleAllOf.md)
  - [SplunkIntegration](docs/SplunkIntegration.md)
+ - [SplunkIntegrationAllOf](docs/SplunkIntegrationAllOf.md)
  - [StackTraceItem](docs/StackTraceItem.md)
  - [StackTraceLine](docs/StackTraceLine.md)
  - [StaticThreshold](docs/StaticThreshold.md)
+ - [StaticThresholdAllOf](docs/StaticThresholdAllOf.md)
+ - [StatusCodeWebsiteAlertRule](docs/StatusCodeWebsiteAlertRule.md)
  - [SyntheticCallConfig](docs/SyntheticCallConfig.md)
  - [SyntheticCallRule](docs/SyntheticCallRule.md)
  - [SyntheticCallWithDefaultsConfig](docs/SyntheticCallWithDefaultsConfig.md)
  - [SystemRule](docs/SystemRule.md)
+ - [SystemRuleAllOf](docs/SystemRuleAllOf.md)
  - [SystemRuleLabel](docs/SystemRuleLabel.md)
  - [Tag](docs/Tag.md)
  - [TagFilter](docs/TagFilter.md)
  - [TagMatcherDto](docs/TagMatcherDto.md)
+ - [TagMatcherDtoAllOf](docs/TagMatcherDtoAllOf.md)
  - [Threshold](docs/Threshold.md)
  - [ThresholdRule](docs/ThresholdRule.md)
+ - [ThresholdRuleAllOf](docs/ThresholdRuleAllOf.md)
+ - [ThroughputWebsiteAlertRule](docs/ThroughputWebsiteAlertRule.md)
  - [TimeFrame](docs/TimeFrame.md)
  - [Trace](docs/Trace.md)
  - [TraceGroupsItem](docs/TraceGroupsItem.md)
@@ -285,18 +536,28 @@ Class | Method | HTTP request | Description
  - [TreeNode](docs/TreeNode.md)
  - [TreeNodeResult](docs/TreeNodeResult.md)
  - [UnsupportedHttpPathSegmentMatchingRule](docs/UnsupportedHttpPathSegmentMatchingRule.md)
+ - [UnsupportedHttpPathSegmentMatchingRuleAllOf](docs/UnsupportedHttpPathSegmentMatchingRuleAllOf.md)
  - [UsageResult](docs/UsageResult.md)
  - [UsageResultItems](docs/UsageResultItems.md)
+ - [UserImpactWebsiteTimeThreshold](docs/UserImpactWebsiteTimeThreshold.md)
+ - [UserImpactWebsiteTimeThresholdAllOf](docs/UserImpactWebsiteTimeThresholdAllOf.md)
  - [UserResult](docs/UserResult.md)
  - [UsersResult](docs/UsersResult.md)
  - [ValidatedAlertingChannelInputInfo](docs/ValidatedAlertingChannelInputInfo.md)
  - [ValidatedAlertingConfiguration](docs/ValidatedAlertingConfiguration.md)
  - [ValidatedMaintenanceConfigWithStatus](docs/ValidatedMaintenanceConfigWithStatus.md)
  - [VictorOpsIntegration](docs/VictorOpsIntegration.md)
+ - [VictorOpsIntegrationAllOf](docs/VictorOpsIntegrationAllOf.md)
+ - [ViolationsInPeriodWebsiteTimeThreshold](docs/ViolationsInPeriodWebsiteTimeThreshold.md)
+ - [ViolationsInPeriodWebsiteTimeThresholdAllOf](docs/ViolationsInPeriodWebsiteTimeThresholdAllOf.md)
+ - [ViolationsInSequenceWebsiteTimeThreshold](docs/ViolationsInSequenceWebsiteTimeThreshold.md)
+ - [WebexTeamsWebhookIntegration](docs/WebexTeamsWebhookIntegration.md)
  - [WebhookIntegration](docs/WebhookIntegration.md)
+ - [WebhookIntegrationAllOf](docs/WebhookIntegrationAllOf.md)
  - [Website](docs/Website.md)
  - [WebsiteAlertConfig](docs/WebsiteAlertConfig.md)
  - [WebsiteAlertConfigWithMetadata](docs/WebsiteAlertConfigWithMetadata.md)
+ - [WebsiteAlertRule](docs/WebsiteAlertRule.md)
  - [WebsiteBeaconGroupsItem](docs/WebsiteBeaconGroupsItem.md)
  - [WebsiteBeaconTagGroup](docs/WebsiteBeaconTagGroup.md)
  - [WebsiteBeaconsItem](docs/WebsiteBeaconsItem.md)
@@ -304,6 +565,7 @@ Class | Method | HTTP request | Description
  - [WebsiteMonitoringBeacon](docs/WebsiteMonitoringBeacon.md)
  - [WebsiteMonitoringMetricDescription](docs/WebsiteMonitoringMetricDescription.md)
  - [WebsiteMonitoringMetricsConfiguration](docs/WebsiteMonitoringMetricsConfiguration.md)
+ - [WebsiteTimeThreshold](docs/WebsiteTimeThreshold.md)
 
 
 ## Documentation For Authorization
@@ -323,6 +585,7 @@ auth := context.WithValue(context.Background(), sw.ContextAPIKey, sw.APIKey{
 })
 r, err := client.Service.Operation(auth, args)
 ```
+
 
 
 ## Author

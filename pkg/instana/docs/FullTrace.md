@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
+**Id** | **string** |  | 
 **TotalErrorCount** | **int32** |  | [optional] 
 **RootSpan** | [**Span**](Span.md) |  | 
 

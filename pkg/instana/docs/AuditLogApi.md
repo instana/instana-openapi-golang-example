@@ -11,6 +11,7 @@ Method | HTTP request | Description
 ## GetAuditLogs
 
 > AuditLogResponse GetAuditLogs(ctx, optional)
+
 Audit log
 
 ### Required Parameters

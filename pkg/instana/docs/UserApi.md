@@ -8,7 +8,7 @@ Method | HTTP request | Description
 [**GetInvitations**](UserApi.md#GetInvitations) | **Get** /api/settings/users/invitations | All pending invitations
 [**GetRole**](UserApi.md#GetRole) | **Get** /api/settings/roles/{roleId} | Role
 [**GetRoles**](UserApi.md#GetRoles) | **Get** /api/settings/roles | All roles
-[**GetUsers**](UserApi.md#GetUsers) | **Get** /api/settings/users | All tenant users (excluding pending invitations)
+[**GetUsers**](UserApi.md#GetUsers) | **Get** /api/settings/users | All users (without invitations)
 [**GetUsersIncludingInvitations**](UserApi.md#GetUsersIncludingInvitations) | **Get** /api/settings/users/overview | All users (incl. invitations)
 [**PutRole**](UserApi.md#PutRole) | **Put** /api/settings/roles/{roleId} | Create or update role
 [**RemoveUserFromTenant**](UserApi.md#RemoveUserFromTenant) | **Delete** /api/settings/users/{userId} | Remove user from tenant
@@ -21,6 +21,7 @@ Method | HTTP request | Description
 ## DeleteRole
 
 > DeleteRole(ctx, roleId)
+
 Delete role
 
 ### Required Parameters
@@ -52,6 +53,7 @@ Name | Type | Description  | Notes
 ## GetInvitations
 
 > []UserResult GetInvitations(ctx, )
+
 All pending invitations
 
 ### Required Parameters
@@ -79,6 +81,7 @@ This endpoint does not need any parameter.
 ## GetRole
 
 > Role GetRole(ctx, roleId)
+
 Role
 
 ### Required Parameters
@@ -110,6 +113,7 @@ Name | Type | Description  | Notes
 ## GetRoles
 
 > []Role GetRoles(ctx, )
+
 All roles
 
 ### Required Parameters
@@ -137,7 +141,8 @@ This endpoint does not need any parameter.
 ## GetUsers
 
 > []UserResult GetUsers(ctx, )
-All tenant users (excluding pending invitations)
+
+All users (without invitations)
 
 ### Required Parameters
 
@@ -164,6 +169,7 @@ This endpoint does not need any parameter.
 ## GetUsersIncludingInvitations
 
 > UsersResult GetUsersIncludingInvitations(ctx, )
+
 All users (incl. invitations)
 
 ### Required Parameters
@@ -191,6 +197,7 @@ This endpoint does not need any parameter.
 ## PutRole
 
 > Role PutRole(ctx, roleId, role)
+
 Create or update role
 
 ### Required Parameters
@@ -212,7 +219,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -223,6 +230,7 @@ Name | Type | Description  | Notes
 ## RemoveUserFromTenant
 
 > RemoveUserFromTenant(ctx, userId)
+
 Remove user from tenant
 
 ### Required Parameters
@@ -254,6 +262,7 @@ Name | Type | Description  | Notes
 ## RevokePendingInvitations
 
 > RevokePendingInvitations(ctx, optional)
+
 Revoke pending invitation
 
 ### Required Parameters
@@ -294,6 +303,7 @@ Name | Type | Description  | Notes
 ## SendInvitation
 
 > SendInvitation(ctx, optional)
+
 Send user invitation
 
 ### Required Parameters
@@ -335,6 +345,7 @@ Name | Type | Description  | Notes
 ## SetRole
 
 > SetRole(ctx, userId, optional)
+
 Add user to role
 
 ### Required Parameters

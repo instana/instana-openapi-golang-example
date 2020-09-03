@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
-**Label** | **string** |  | [optional] 
+**Id** | **string** |  | 
+**Label** | **string** |  | 
 **Types** | **[]string** |  | 
 **Technologies** | **[]string** |  | 
 **EntityType** | **string** |  | [optional] 

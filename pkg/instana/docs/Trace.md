@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
-**Label** | **string** |  | [optional] 
+**Id** | **string** |  | 
+**Label** | **string** |  | 
 **StartTime** | **int64** |  | [optional] 
 **Duration** | **int64** |  | [optional] 
 **Erroneous** | **bool** |  | [optional] 

@@ -14,6 +14,7 @@ Method | HTTP request | Description
 ## ApplicationResourcesEndpoints
 
 > EndpointResult ApplicationResourcesEndpoints(ctx, optional)
+
 Get endpoints
 
 ### Required Parameters
@@ -60,6 +61,7 @@ Name | Type | Description  | Notes
 ## GetApplicationServices
 
 > ServiceResult GetApplicationServices(ctx, optional)
+
 Get applications/services
 
 ### Required Parameters
@@ -104,6 +106,7 @@ Name | Type | Description  | Notes
 ## GetApplications
 
 > ApplicationResult GetApplications(ctx, optional)
+
 Get applications
 
 ### Required Parameters
@@ -148,6 +151,7 @@ Name | Type | Description  | Notes
 ## GetServices
 
 > ServiceResult GetServices(ctx, optional)
+
 Get services
 
 ### Required Parameters

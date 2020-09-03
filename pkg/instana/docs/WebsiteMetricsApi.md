@@ -12,6 +12,7 @@ Method | HTTP request | Description
 ## GetBeaconMetrics
 
 > WebsiteMetricResult GetBeaconMetrics(ctx, optional)
+
 Get beacon metrics
 
 ### Required Parameters
@@ -52,6 +53,7 @@ Name | Type | Description  | Notes
 ## GetPageLoad
 
 > []WebsiteMonitoringBeacon GetPageLoad(ctx, id, timestamp)
+
 Get page load
 
 ### Required Parameters

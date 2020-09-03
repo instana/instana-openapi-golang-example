@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ServiceId** | **string** |  | [optional] 
+**ServiceId** | **string** |  | 
 **EndpointNameByFirstPathSegmentRuleEnabled** | **bool** |  | [optional] 
 **EndpointNameByCollectedPathTemplateRuleEnabled** | **bool** |  | [optional] 
 **Rules** | [**[]HttpEndpointRule**](HttpEndpointRule.md) |  | 

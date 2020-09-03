@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
+**Id** | **string** |  | 
 **Name** | **string** |  | 
 **EntityType** | **string** |  | 
 **Query** | **string** |  | [optional] 

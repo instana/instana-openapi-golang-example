@@ -13,6 +13,7 @@ Method | HTTP request | Description
 ## GetApplicationMetrics
 
 > ApplicationMetricResult GetApplicationMetrics(ctx, optional)
+
 Get Application Metrics
 
 ### Required Parameters
@@ -30,6 +31,7 @@ Optional parameters are passed through a pointer to a GetApplicationMetricsOpts 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **fillTimeSeries** | **optional.Bool**|  | 
  **getApplications** | [**optional.Interface of GetApplications**](GetApplications.md)|  | 
 
 ### Return type
@@ -53,6 +55,7 @@ Name | Type | Description  | Notes
 ## GetEndpointsMetrics
 
 > EndpointMetricResult GetEndpointsMetrics(ctx, optional)
+
 Get Endpoint metrics
 
 ### Required Parameters
@@ -70,6 +73,7 @@ Optional parameters are passed through a pointer to a GetEndpointsMetricsOpts st
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **fillTimeSeries** | **optional.Bool**|  | 
  **getEndpoints** | [**optional.Interface of GetEndpoints**](GetEndpoints.md)|  | 
 
 ### Return type
@@ -93,6 +97,7 @@ Name | Type | Description  | Notes
 ## GetServicesMetrics
 
 > ServiceMetricResult GetServicesMetrics(ctx, optional)
+
 Get Service metrics
 
 ### Required Parameters
@@ -110,6 +115,7 @@ Optional parameters are passed through a pointer to a GetServicesMetricsOpts str
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **fillTimeSeries** | **optional.Bool**|  | 
  **getServices** | [**optional.Interface of GetServices**](GetServices.md)|  | 
 
 ### Return type

@@ -12,6 +12,7 @@ Method | HTTP request | Description
 ## GetWebsiteCatalogMetrics
 
 > []WebsiteMonitoringMetricDescription GetWebsiteCatalogMetrics(ctx, )
+
 Metric catalog
 
 This endpoint retrieves all available metric definitions for website monitoring. 
@@ -40,7 +41,8 @@ This endpoint does not need any parameter.
 
 ## GetWebsiteCatalogTags
 
-> []MetricInstance GetWebsiteCatalogTags(ctx, )
+> []Tag GetWebsiteCatalogTags(ctx, )
+
 Filter tag catalog
 
 This endpoint retrieves all available tags for your monitored system.  These tags can be used to group metric results. ``` \"group\": {   \"groupbyTag\": \"beacon.page.name\" } ```  These tags can be used to filter metric results. ``` \"tagFilters\": [{  \"name\": \"beacon.website.name\",  \"operator\": \"EQUALS\",  \"value\": \"example\" }] ``` 
@@ -51,7 +53,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**[]MetricInstance**](MetricInstance.md)
+[**[]Tag**](Tag.md)
 
 ### Authorization
 

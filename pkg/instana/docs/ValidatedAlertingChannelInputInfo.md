@@ -4,12 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
+**Id** | **string** |  | 
 **Label** | **string** |  | 
 **Query** | **string** |  | [optional] 
 **EventTypes** | **[]string** |  | [optional] 
 **SelectedEvents** | **int32** |  | [optional] 
 **Enabled** | **bool** |  | [optional] 
+**Type** | **string** |  | 
+**EntityId** | **string** |  | [optional] 
 **Invalid** | **bool** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

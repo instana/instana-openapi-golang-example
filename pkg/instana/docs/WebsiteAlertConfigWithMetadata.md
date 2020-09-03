@@ -5,15 +5,17 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | **string** |  | 
-**Description** | **string** |  | [optional] 
-**WebsiteId** | **string** |  | [optional] 
+**Description** | **string** |  | 
+**WebsiteId** | **string** |  | 
 **Severity** | **int32** |  | [optional] 
 **Triggering** | **bool** |  | [optional] 
 **TagFilters** | [**[]TagFilter**](TagFilter.md) |  | 
-**Rule** | [**AlertRule**](AlertRule.md) |  | 
+**Rule** | [**WebsiteAlertRule**](WebsiteAlertRule.md) |  | 
 **Baseline** | [**HistoricBaseline**](HistoricBaseline.md) |  | [optional] 
 **AlertChannelIds** | **[]string** |  | 
-**Id** | **string** |  | [optional] 
+**Granularity** | **int32** |  | [optional] [default to GRANULARITY__600000]
+**TimeThreshold** | [**WebsiteTimeThreshold**](WebsiteTimeThreshold.md) |  | 
+**Id** | **string** |  | 
 **Created** | **int64** |  | [optional] 
 **ReadOnly** | **bool** |  | [optional] 
 **Enabled** | **bool** |  | [optional] 

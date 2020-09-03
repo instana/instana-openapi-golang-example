@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
-**ShortPluginId** | **string** |  | [optional] 
-**Name** | **string** |  | [optional] 
+**Id** | **string** |  | 
+**ShortPluginId** | **string** |  | 
+**Name** | **string** |  | 
 **Description** | **string** |  | [optional] 
 **HyperParams** | [**[]HyperParam**](HyperParam.md) |  | 
 **RuleInputs** | [**[]RuleInput**](RuleInput.md) |  | 

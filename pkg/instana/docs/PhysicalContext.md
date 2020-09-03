@@ -7,7 +7,6 @@ Name | Type | Description | Notes
 **Process** | [**SnapshotPreview**](SnapshotPreview.md) |  | [optional] 
 **Container** | [**SnapshotPreview**](SnapshotPreview.md) |  | [optional] 
 **Host** | [**SnapshotPreview**](SnapshotPreview.md) |  | [optional] 
-**Zone** | [**SnapshotPreview**](SnapshotPreview.md) |  | [optional] 
 **Cluster** | [**SnapshotPreview**](SnapshotPreview.md) |  | [optional] 
 **Cloudfoundry** | [**CloudfoundryPhysicalContext**](CloudfoundryPhysicalContext.md) |  | [optional] 
 **Kubernetes** | [**KubernetesPhysicalContext**](KubernetesPhysicalContext.md) |  | [optional] 

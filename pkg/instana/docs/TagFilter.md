@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | **string** |  | [optional] 
+**Name** | **string** |  | 
 **Value** | **string** |  | 
 **Operator** | **string** |  | 
 **Entity** | **string** |  | [optional] 

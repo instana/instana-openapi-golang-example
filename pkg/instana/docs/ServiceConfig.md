@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | [optional] 
-**Name** | **string** |  | [optional] 
+**Id** | **string** |  | 
+**Name** | **string** |  | 
 **Comment** | **string** |  | [optional] 
-**Label** | **string** |  | [optional] 
+**Label** | **string** |  | 
 **Enabled** | **bool** |  | 
 **MatchSpecification** | [**[]ServiceMatchingRule**](ServiceMatchingRule.md) |  | 
 

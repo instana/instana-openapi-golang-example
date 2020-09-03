@@ -15,6 +15,7 @@ Method | HTTP request | Description
 ## GetAllUsage
 
 > []UsageResult GetAllUsage(ctx, )
+
 API usage by customer
 
 ### Required Parameters
@@ -42,6 +43,7 @@ This endpoint does not need any parameter.
 ## GetHostsPerDay
 
 > []UsageResult GetHostsPerDay(ctx, day, month, year)
+
 Host count day / month / year
 
 ### Required Parameters
@@ -75,6 +77,7 @@ Name | Type | Description  | Notes
 ## GetHostsPerMonth
 
 > []UsageResult GetHostsPerMonth(ctx, month, year)
+
 Host count month / year
 
 ### Required Parameters
@@ -107,6 +110,7 @@ Name | Type | Description  | Notes
 ## GetUsagePerDay
 
 > []UsageResult GetUsagePerDay(ctx, day, month, year)
+
 API usage day / month / year
 
 ### Required Parameters
@@ -140,6 +144,7 @@ Name | Type | Description  | Notes
 ## GetUsagePerMonth
 
 > []UsageResult GetUsagePerMonth(ctx, month, year)
+
 API usage month / year
 
 ### Required Parameters

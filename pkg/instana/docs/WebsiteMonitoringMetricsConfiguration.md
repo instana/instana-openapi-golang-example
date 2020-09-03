@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Metric** | **string** |  | [optional] 
+**Metric** | **string** |  | 
 **Granularity** | **int32** |  | [optional] 
 **Aggregation** | **string** |  | 
 

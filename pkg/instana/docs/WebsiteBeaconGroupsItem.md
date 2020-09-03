@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | **string** |  | [optional] 
+**Name** | **string** |  | 
 **EarliestTimestamp** | **int64** |  | [optional] 
 **Cursor** | [**IngestionOffsetCursor**](IngestionOffsetCursor.md) |  | 
 **Metrics** | [**map[string][][]float32**](array.md) |  | 

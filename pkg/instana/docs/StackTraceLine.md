@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**File** | **string** |  | [optional] 
+**File** | **string** |  | 
 **Name** | **string** |  | [optional] 
 **Line** | **int32** |  | [optional] 
 **Column** | **int32** |  | [optional] 

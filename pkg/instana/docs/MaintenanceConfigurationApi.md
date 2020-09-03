@@ -8,14 +8,13 @@ Method | HTTP request | Description
 [**GetMaintenanceConfig**](MaintenanceConfigurationApi.md#GetMaintenanceConfig) | **Get** /api/settings/maintenance/{id} | Maintenance configuration
 [**GetMaintenanceConfigs**](MaintenanceConfigurationApi.md#GetMaintenanceConfigs) | **Get** /api/settings/maintenance | All maintenance configurations
 [**PutMaintenanceConfig**](MaintenanceConfigurationApi.md#PutMaintenanceConfig) | **Put** /api/settings/maintenance/{id} | Create or update maintenance configuration
-[**ScheduleMaintenanceConfig**](MaintenanceConfigurationApi.md#ScheduleMaintenanceConfig) | **Put** /api/settings/maintenance/schedule/{id} | Schedule maintenance
-[**UnscheduleMaintenanceConfig**](MaintenanceConfigurationApi.md#UnscheduleMaintenanceConfig) | **Put** /api/settings/maintenance/unschedule/{id} | Unschedule maintenance
 
 
 
 ## DeleteMaintenanceConfig
 
 > DeleteMaintenanceConfig(ctx, id)
+
 Delete maintenance configuration
 
 ### Required Parameters
@@ -47,6 +46,7 @@ Name | Type | Description  | Notes
 ## GetMaintenanceConfig
 
 > MaintenanceConfigWithLastUpdated GetMaintenanceConfig(ctx, id)
+
 Maintenance configuration
 
 ### Required Parameters
@@ -78,6 +78,7 @@ Name | Type | Description  | Notes
 ## GetMaintenanceConfigs
 
 > []ValidatedMaintenanceConfigWithStatus GetMaintenanceConfigs(ctx, )
+
 All maintenance configurations
 
 ### Required Parameters
@@ -105,6 +106,7 @@ This endpoint does not need any parameter.
 ## PutMaintenanceConfig
 
 > PutMaintenanceConfig(ctx, id, maintenanceConfig)
+
 Create or update maintenance configuration
 
 ### Required Parameters
@@ -126,69 +128,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## ScheduleMaintenanceConfig
-
-> ScheduleMaintenanceConfig(ctx, id)
-Schedule maintenance
-
-### Required Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**id** | **string**|  | 
-
-### Return type
-
- (empty response body)
-
-### Authorization
-
-[ApiKeyAuth](../README.md#ApiKeyAuth)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## UnscheduleMaintenanceConfig
-
-> UnscheduleMaintenanceConfig(ctx, id)
-Unschedule maintenance
-
-### Required Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**id** | **string**|  | 
-
-### Return type
-
- (empty response body)
-
-### Authorization
-
-[ApiKeyAuth](../README.md#ApiKeyAuth)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

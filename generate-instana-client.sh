@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 if [[ ! -f "resources/openapi.yaml" ]]; then
-	wget https://instana.github.io/openapi/openapi.yaml -O resources/openapi.yaml
+	curl -0 https://instana.github.io/openapi/openapi.yaml -o resources/openapi.yaml
 fi
 
 if [[ ! -f openapi-generator-cli.jar ]]; then
-	wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/5.0.0-beta/openapi-generator-cli-5.0.0-beta.jar -O openapi-generator-cli.jar
+	curl -0 https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/5.0.0-beta/openapi-generator-cli-5.0.0-beta.jar -o openapi-generator-cli.jar
 fi
 
 GO_POST_PROCESS_FILE="gofmt -s -w" java -jar openapi-generator-cli.jar generate -i resources/openapi.yaml -g go \
